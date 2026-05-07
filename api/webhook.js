@@ -34,23 +34,28 @@ export default async function handler(req, res) {
     if (event.type === 'message' && event.message.type === 'text') {
       const userId = event.source.userId;
       const replyToken = event.replyToken;
+      const text = event.message.text.trim();
 
-      if (token) {
-        await fetch('https://api.line.me/v2/bot/message/reply', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            replyToken,
-            messages: [{
-              type: 'text',
-              text: `あなたのLINE IDは：\n${userId}\n\n管理者にこのIDをお伝えください。`
-            }]
-          }),
-        });
+      // 「ID」と送信した時だけuserIdを返信
+      if (text === 'ID' || text === 'id' || text === 'ｉｄ' || text === 'ＩＤ') {
+        if (token) {
+          await fetch('https://api.line.me/v2/bot/message/reply', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              replyToken,
+              messages: [{
+                type: 'text',
+                text: `あなたのLINE IDは：\n${userId}\n\n管理者にこのIDをお伝えください。`
+              }]
+            }),
+          });
+        }
       }
+      // それ以外のメッセージには返信しない
     }
   }
 
