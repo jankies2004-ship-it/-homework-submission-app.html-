@@ -1843,6 +1843,37 @@ function toggleRemindPanel() {
   }
 }
 
+// Re-render remind list when template changes
+document.addEventListener('DOMContentLoaded', () => {
+  const ta = document.getElementById('remind-template');
+  if (ta) ta.addEventListener('input', () => { if (remindPanelOpen) renderRemindPanel(); });
+});
+
+// ===== LINE USER ID 管理 =====
+// lineUsers[studentKey] = 'Uxxxxxxxxx' (LINE userId)
+const LINE_USERS_KEY = 'eimei_line_users';
+let lineUsers = {};
+function loadLineUsers() {
+  try { const d = localStorage.getItem(LINE_USERS_KEY); if (d) lineUsers = JSON.parse(d); } catch(e) {}
+}
+function saveLineUsers() {
+  try { localStorage.setItem(LINE_USERS_KEY, JSON.stringify(lineUsers)); } catch(e) {}
+}
+loadLineUsers();
+
+// LINE API経由でメッセージ送信
+async function sendLineMessage(userId, message) {
+  try {
+    const res = await fetch('/api/send-line', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, message }),
+    });
+    return res.ok;
+  } catch(e) { return false; }
+}
+
+// 催促パネルの各生徒にLINE送信ボタンを追加
 function renderRemindPanel() {
   const today = new Date();
   const m = today.getMonth() + 1;
@@ -1860,6 +1891,7 @@ function renderRemindPanel() {
 
   listEl.innerHTML = unsubmitted.map((s, idx) => {
     const msg = buildRemindMsg(s.name);
+    const hasUserId = !!lineUsers[s.key];
     const lineUrl = `https://line.me/R/msg/text/?${encodeURIComponent(msg)}`;
     return `<div class="remind-item">
       <div class="remind-item-header">
@@ -1867,23 +1899,60 @@ function renderRemindPanel() {
         <span class="remind-item-meta">${s.school}　${s.grade}</span>
       </div>
       <div class="remind-item-msg" id="remind-msg-${idx}">${msg}</div>
+      ${hasUserId ? `
+        <div style="font-size:11px;color:#3B6D11;margin-bottom:6px">✔ LINE連携済み</div>
+      ` : `
+        <div style="display:flex;gap:6px;margin-bottom:8px">
+          <input type="text" id="uid-input-${idx}" placeholder="LINE userId (Uで始まる文字列)"
+            style="flex:1;padding:6px 8px;border:0.5px solid #FAC775;border-radius:6px;font-size:11px;font-family:inherit">
+          <button onclick="saveLineUserId('${s.key}',${idx})"
+            style="padding:6px 10px;background:#EF9F27;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit">
+            保存
+          </button>
+        </div>
+      `}
       <div class="remind-item-actions">
         <button class="remind-copy-btn" id="remind-copy-${idx}" onclick="copyRemindMsg(${idx},'${s.name}')">
           📋 コピー
         </button>
-        <a class="remind-line-btn" href="${lineUrl}" target="_blank" onclick="event.stopPropagation()">
-          LINE で送る
-        </a>
+        ${hasUserId ? `
+          <button class="remind-line-btn" id="remind-line-${idx}" onclick="sendLineRemind('${s.key}',${idx},'${s.name}')">
+            📨 LINE送信
+          </button>
+        ` : `
+          <a class="remind-line-btn" href="${lineUrl}" target="_blank" onclick="event.stopPropagation()">
+            LINE で送る
+          </a>
+        `}
       </div>
     </div>`;
   }).join('');
 }
 
-// Re-render remind list when template changes
-document.addEventListener('DOMContentLoaded', () => {
-  const ta = document.getElementById('remind-template');
-  if (ta) ta.addEventListener('input', () => { if (remindPanelOpen) renderRemindPanel(); });
-});
+function saveLineUserId(key, idx) {
+  const input = document.getElementById(`uid-input-${idx}`);
+  const uid = input ? input.value.trim() : '';
+  if (!uid.startsWith('U') || uid.length < 10) {
+    showToast('正しいuserIdを入力してください（Uで始まる文字列）');
+    return;
+  }
+  lineUsers[key] = uid;
+  saveLineUsers();
+  renderRemindPanel();
+  showToast('✔ LINE userIdを保存しました');
+}
+
+async function sendLineRemind(key, idx, name) {
+  const userId = lineUsers[key];
+  if (!userId) { showToast('LINE userIdが未設定です'); return; }
+  const msg = buildRemindMsg(name);
+  const btn = document.getElementById(`remind-line-${idx}`);
+  if (btn) { btn.textContent = '送信中...'; btn.style.opacity = '0.7'; }
+  const ok = await sendLineMessage(userId, msg);
+  if (btn) { btn.textContent = ok ? '✔ 送信完了' : '❌ 送信失敗'; btn.style.opacity = '1'; }
+  showToast(ok ? `✔ ${name}さんにLINEを送信しました` : '送信に失敗しました。userIdを確認してください');
+  setTimeout(() => { if (btn) { btn.textContent = '📨 LINE送信'; } }, 3000);
+}
 
 function copyRemindMsg(idx, name) {
   const msg = buildRemindMsg(name);
