@@ -6,18 +6,21 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { userId, message } = req.body;
+  const { userId, message, type } = req.body;
+  // type: 'submission'（課題提出通知）| 'reminder'（未提出催促）| undefined（個人メッセージ）
 
   if (!userId || !message) {
     return res.status(400).json({ error: 'userId と message は必須です' });
   }
 
   const token = process.env.LINE_CHANNEL_ACCESS_TOKEN;
+  const groupId = process.env.LINE_GROUP_ID;
+
   if (!token) {
     return res.status(500).json({ error: 'アクセストークンが設定されていません' });
   }
 
-  try {
+  async function push(to, text) {
     const response = await fetch('https://api.line.me/v2/bot/message/push', {
       method: 'POST',
       headers: {
@@ -25,14 +28,29 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify({
-        to: userId,
-        messages: [{ type: 'text', text: message }],
+        to,
+        messages: [{ type: 'text', text }],
       }),
     });
-
     if (!response.ok) {
       const err = await response.json();
-      return res.status(response.status).json({ error: err });
+      throw new Error(JSON.stringify(err));
+    }
+  }
+
+  try {
+    // 個人へのメッセージ送信
+    await push(userId, message);
+
+    // グループへの通知（LINE_GROUP_ID が設定されている場合）
+    if (groupId) {
+      if (type === 'submission') {
+        // 課題提出通知
+        await push(groupId, `✅ 課題提出通知\n${message}`);
+      } else if (type === 'reminder') {
+        // 未提出催促通知
+        await push(groupId, `⚠️ 未提出催促\n${message}`);
+      }
     }
 
     return res.status(200).json({ success: true });

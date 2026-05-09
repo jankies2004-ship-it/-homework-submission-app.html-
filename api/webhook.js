@@ -4,58 +4,69 @@ export default async function handler(req, res) {
   const events = req.body.events || [];
   const token = process.env.LINE_CHANNEL_ACCESS_TOKEN;
 
-  // ユーザーストレージ（KVがないためVercel環境変数は読み取り専用）
-  // userIdをログに記録し、フォロー時にウェルカムメッセージを送る
+  async function pushMessage(to, text) {
+    if (!token || !to) return;
+    await fetch('https://api.line.me/v2/bot/message/push', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        to,
+        messages: [{ type: 'text', text }],
+      }),
+    });
+  }
+
+  async function replyMessage(replyToken, text) {
+    if (!token) return;
+    await fetch('https://api.line.me/v2/bot/message/reply', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        replyToken,
+        messages: [{ type: 'text', text }],
+      }),
+    });
+  }
+
   for (const event of events) {
+    // 友だち追加
     if (event.type === 'follow') {
       const userId = event.source.userId;
       console.log('新しいフォロワー userId:', userId);
-
-      // ウェルカムメッセージを送信
-      if (token) {
-        await fetch('https://api.line.me/v2/bot/message/push', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            to: userId,
-            messages: [{
-              type: 'text',
-              text: `【エイメイ英語課題Bot】\n友だち追加ありがとうございます！\n\nあなたのLINE IDは以下です。管理者にお伝えください：\n\n${userId}\n\nこのBotから課題の催促連絡が届きます📚`
-            }]
-          }),
-        });
-      }
+      await pushMessage(
+        userId,
+        `【エイメイ英語課題Bot】\n友だち追加ありがとうございます！\n\n課題の提出・催促連絡が届きます📚\n\n自分のIDを確認したい場合は「ID」と送信してください。`
+      );
     }
 
-    // テキストメッセージへの返信
+    // グループ参加
+    if (event.type === 'join') {
+      const groupId = event.source.groupId || event.source.roomId;
+      console.log('グループ参加 groupId:', groupId);
+      await pushMessage(
+        groupId,
+        `【エイメイ英語課題Bot】\nグループに参加しました！\n\n課題提出状況の通知と未提出者への催促をお知らせします📚\n\nグループID：${groupId}\n（管理者の方はVercelの環境変数 LINE_GROUP_ID にこのIDを設定してください）`
+      );
+    }
+
+    // テキストメッセージ
     if (event.type === 'message' && event.message.type === 'text') {
       const userId = event.source.userId;
       const replyToken = event.replyToken;
       const text = event.message.text.trim();
 
-      // 「ID」と送信した時だけuserIdを返信
       if (text === 'ID' || text === 'id' || text === 'ｉｄ' || text === 'ＩＤ') {
-        if (token) {
-          await fetch('https://api.line.me/v2/bot/message/reply', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              replyToken,
-              messages: [{
-                type: 'text',
-                text: `あなたのLINE IDは：\n${userId}\n\n管理者にこのIDをお伝えください。`
-              }]
-            }),
-          });
-        }
+        await replyMessage(
+          replyToken,
+          `あなたのLINE IDは：\n${userId}\n\n管理者にこのIDをお伝えください。`
+        );
       }
-      // それ以外のメッセージには返信しない
     }
   }
 
