@@ -1726,6 +1726,13 @@ function doSubmit(name, school, grade, key) {
   renderPointsScreen();
   if (isNewDay) animatePoint();
   showToast(isNewDay ? '✔ 提出完了！+1ポイント獲得！' : '✔ 提出しました！（本日分のポイント獲得済み）');
+
+  // 管理者・グループにLINE通知
+  fetch('/api/notify-admin', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, school, grade, date: dateStr, fileCount: entry.files.length }),
+  }).catch(() => {});
 }
 
 // ===== TOAST =====
@@ -1945,7 +1952,7 @@ async function sendLineMessage(userId, message) {
     const res = await fetch('/api/send-line', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, message }),
+      body: JSON.stringify({ userId, message, type: 'reminder' }),
     });
     return res.ok;
   } catch(e) { return false; }
