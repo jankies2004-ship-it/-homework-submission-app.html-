@@ -1729,15 +1729,16 @@ function doSubmit(name, school, grade, key) {
   if (isNewDay) animatePoint();
   showToast(isNewDay ? '✔ 提出完了！+1ポイント獲得！' : '✔ 提出しました！（本日分のポイント獲得済み）');
 
-  // 管理者・グループにLINE通知（バックグラウンドで画像アップロード後に送信）
+  // 管理者・グループにLINE通知（バックグラウンドで画像圧縮→アップロード後に送信）
   (async () => {
     try {
       const imageUrls = [];
       for (const file of imagesToUpload) {
+        const compressed = await compressImage(file.dataUrl);
         const res = await fetch('/api/upload-image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ dataUrl: file.dataUrl, filename: file.name }),
+          body: JSON.stringify({ dataUrl: compressed, filename: file.name.replace(/\.[^.]+$/, '.jpg') }),
         });
         if (res.ok) {
           const data = await res.json();
@@ -1751,6 +1752,25 @@ function doSubmit(name, school, grade, key) {
       });
     } catch (e) {}
   })();
+}
+
+function compressImage(dataUrl, maxWidth = 1920, quality = 0.85) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      let { width, height } = img;
+      if (width > maxWidth) {
+        height = Math.round((height * maxWidth) / width);
+        width = maxWidth;
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.src = dataUrl;
+  });
 }
 
 // ===== TOAST =====
