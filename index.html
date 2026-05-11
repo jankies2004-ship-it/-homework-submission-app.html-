@@ -1736,9 +1736,7 @@ function doSubmit(name, school, grade, key) {
       for (const file of imagesToUpload) {
         try {
           const compressed = await compressImage(file.dataUrl);
-          if (!compressed) { console.error('[LINE] compression returned null, skipping'); continue; }
-          if (compressed.length > 4_000_000) { console.error('[LINE] still too large after compression:', compressed.length); continue; }
-          console.log('[LINE] uploading:', file.name, 'base64 size:', compressed.length);
+          if (!compressed || compressed.length > 4_000_000) continue;
           const res = await fetch('/api/upload-image', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1746,25 +1744,17 @@ function doSubmit(name, school, grade, key) {
           });
           if (res.ok) {
             const data = await res.json();
-            console.log('[LINE] upload success:', data.url);
             if (data.url) imageUrls.push(data.url);
-          } else {
-            const err = await res.text();
-            console.error('[LINE] upload failed:', res.status, err);
           }
-        } catch (uploadErr) {
-          console.error('[LINE] upload error:', uploadErr);
-        }
+        } catch (uploadErr) {}
       }
-      console.log('[LINE] notify-admin with imageUrls:', imageUrls);
       await fetch('/api/notify-admin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, school, grade, date: dateStr, fileCount: entry.files.length, imageUrls }),
       });
-    } catch (e) {
-      console.error('[LINE] notify error:', e);
-    }
+    } catch (e) {}
+
   })();
 }
 
@@ -1779,9 +1769,8 @@ function compressImage(dataUrl) {
       const u8arr = new Uint8Array(bstr.length);
       for (let i = 0; i < bstr.length; i++) u8arr[i] = bstr.charCodeAt(i);
       objectUrl = URL.createObjectURL(new Blob([u8arr], { type: mime }));
-    } catch (e) {
-      console.error('[LINE] blob conversion failed, falling back to dataUrl', e);
-    }
+    } catch (e) {}
+
 
     const img = new Image();
     img.onerror = () => {
@@ -1805,11 +1794,7 @@ function compressImage(dataUrl) {
       };
       let result = compress(1280, 0.75);
       if (!result || result.length < 100) { resolve(null); return; }
-      if (result.length > 3_000_000) {
-        console.log('[LINE] re-compressing, size was:', result.length);
-        result = compress(960, 0.6);
-      }
-      console.log('[LINE] compressed size:', result.length);
+      if (result.length > 3_000_000) result = compress(960, 0.6);
       resolve(result.length > 100 ? result : null);
     };
     img.src = objectUrl || dataUrl;
