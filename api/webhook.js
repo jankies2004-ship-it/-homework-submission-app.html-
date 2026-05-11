@@ -49,10 +49,19 @@ export default async function handler(req, res) {
     if (event.type === 'join') {
       const groupId = event.source.groupId || event.source.roomId;
       console.log('グループ参加 groupId:', groupId);
+      // グループにウェルカムメッセージ
       await pushMessage(
         groupId,
-        `【エイメイ英語課題Bot】\nグループに参加しました！\n\n課題提出状況の通知と未提出者への催促をお知らせします📚\n\nグループID：${groupId}\n（管理者の方はVercelの環境変数 LINE_GROUP_ID にこのIDを設定してください）`
+        `【エイメイ英語課題Bot】\nグループに参加しました！\n\n課題提出状況の通知と未提出者への催促をお知らせします📚`
       );
+      // 管理者にグループIDを通知
+      const adminId = process.env.ADMIN_LINE_USER_ID;
+      if (adminId) {
+        await pushMessage(
+          adminId,
+          `【Bot管理通知】\nグループに招待されました！\n\nグループID：\n${groupId}\n\nVercelの環境変数 LINE_GROUP_ID にこのIDを設定してください。`
+        );
+      }
     }
 
     // テキストメッセージ
