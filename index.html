@@ -1717,6 +1717,8 @@ function doSubmit(name, school, grade, key) {
   }
   entry.files.push(...pendingFiles);
 
+  const imagesToUpload = pendingFiles.filter(f => f.type.startsWith('image/'));
+
   saveData();
   pendingFiles = [];
   renderPreview();
@@ -1727,12 +1729,28 @@ function doSubmit(name, school, grade, key) {
   if (isNewDay) animatePoint();
   showToast(isNewDay ? '✔ 提出完了！+1ポイント獲得！' : '✔ 提出しました！（本日分のポイント獲得済み）');
 
-  // 管理者・グループにLINE通知
-  fetch('/api/notify-admin', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, school, grade, date: dateStr, fileCount: entry.files.length }),
-  }).catch(() => {});
+  // 管理者・グループにLINE通知（バックグラウンドで画像アップロード後に送信）
+  (async () => {
+    try {
+      const imageUrls = [];
+      for (const file of imagesToUpload) {
+        const res = await fetch('/api/upload-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ dataUrl: file.dataUrl, filename: file.name }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.url) imageUrls.push(data.url);
+        }
+      }
+      await fetch('/api/notify-admin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, school, grade, date: dateStr, fileCount: entry.files.length, imageUrls }),
+      });
+    } catch (e) {}
+  })();
 }
 
 // ===== TOAST =====

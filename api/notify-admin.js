@@ -6,14 +6,14 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { name, school, grade, date, fileCount } = req.body;
+  const { name, school, grade, date, fileCount, imageUrls } = req.body;
   const token = process.env.LINE_CHANNEL_ACCESS_TOKEN;
   const adminId = process.env.ADMIN_LINE_USER_ID;
   const groupId = process.env.LINE_GROUP_ID;
 
   if (!token) return res.status(500).json({ error: 'トークン未設定' });
 
-  async function push(to, text) {
+  async function pushMessages(to, messages) {
     if (!to) return;
     await fetch('https://api.line.me/v2/bot/message/push', {
       method: 'POST',
@@ -21,18 +21,36 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        to,
-        messages: [{ type: 'text', text }],
-      }),
+      body: JSON.stringify({ to, messages }),
     });
   }
 
-  const msg = `✅ 課題提出通知\n\n${name}（${school} ${grade}）\nが課題を提出しました📚\n\nファイル数：${fileCount}件\n提出日：${date}`;
+  const textMsg = { type: 'text', text: `✅ 課題提出通知\n\n${name}（${school} ${grade}）\nが課題を提出しました📚\n\nファイル数：${fileCount}件\n提出日：${date}` };
+
+  // テキスト＋画像を1回のリクエストにまとめる（LINEの上限は5件）
+  const urls = Array.isArray(imageUrls) ? imageUrls.filter(Boolean) : [];
+  const imageMessages = urls.slice(0, 4).map(url => ({
+    type: 'image',
+    originalContentUrl: url,
+    previewImageUrl: url,
+  }));
+  const messages = [textMsg, ...imageMessages];
 
   try {
-    await push(adminId, msg);
-    await push(groupId, msg);
+    await pushMessages(adminId, messages);
+    await pushMessages(groupId, messages);
+
+    // 5枚以上の場合は残りを追加送信
+    for (let i = 4; i < urls.length; i += 5) {
+      const extra = urls.slice(i, i + 5).map(url => ({
+        type: 'image',
+        originalContentUrl: url,
+        previewImageUrl: url,
+      }));
+      await pushMessages(adminId, extra);
+      await pushMessages(groupId, extra);
+    }
+
     return res.status(200).json({ success: true });
   } catch (error) {
     return res.status(500).json({ error: error.message });
