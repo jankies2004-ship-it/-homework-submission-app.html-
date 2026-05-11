@@ -1734,23 +1734,35 @@ function doSubmit(name, school, grade, key) {
     try {
       const imageUrls = [];
       for (const file of imagesToUpload) {
-        const compressed = await compressImage(file.dataUrl);
-        const res = await fetch('/api/upload-image', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ dataUrl: compressed, filename: file.name.replace(/\.[^.]+$/, '.jpg') }),
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.url) imageUrls.push(data.url);
+        try {
+          const compressed = await compressImage(file.dataUrl);
+          console.log('[LINE] uploading:', file.name, 'base64 size:', compressed.length);
+          const res = await fetch('/api/upload-image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ dataUrl: compressed, filename: file.name.replace(/\.[^.]+$/, '.jpg') }),
+          });
+          if (res.ok) {
+            const data = await res.json();
+            console.log('[LINE] upload success:', data.url);
+            if (data.url) imageUrls.push(data.url);
+          } else {
+            const err = await res.text();
+            console.error('[LINE] upload failed:', res.status, err);
+          }
+        } catch (uploadErr) {
+          console.error('[LINE] upload error:', uploadErr);
         }
       }
+      console.log('[LINE] notify-admin with imageUrls:', imageUrls);
       await fetch('/api/notify-admin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, school, grade, date: dateStr, fileCount: entry.files.length, imageUrls }),
       });
-    } catch (e) {}
+    } catch (e) {
+      console.error('[LINE] notify error:', e);
+    }
   })();
 }
 
