@@ -1736,6 +1736,8 @@ function doSubmit(name, school, grade, key) {
       for (const file of imagesToUpload) {
         try {
           const compressed = await compressImage(file.dataUrl);
+          if (!compressed) { console.error('[LINE] compression returned null, skipping'); continue; }
+          if (compressed.length > 4_000_000) { console.error('[LINE] still too large after compression:', compressed.length); continue; }
           console.log('[LINE] uploading:', file.name, 'base64 size:', compressed.length);
           const res = await fetch('/api/upload-image', {
             method: 'POST',
@@ -1766,20 +1768,32 @@ function doSubmit(name, school, grade, key) {
   })();
 }
 
-function compressImage(dataUrl, maxWidth = 1920, quality = 0.85) {
+function compressImage(dataUrl) {
   return new Promise((resolve) => {
     const img = new Image();
+    img.onerror = () => { console.error('[LINE] image load failed'); resolve(null); };
     img.onload = () => {
-      let { width, height } = img;
-      if (width > maxWidth) {
-        height = Math.round((height * maxWidth) / width);
-        width = maxWidth;
+      const compress = (maxWidth, quality) => {
+        let { width, height } = img;
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        return canvas.toDataURL('image/jpeg', quality);
+      };
+      let result = compress(1280, 0.75);
+      if (!result || result.length < 100) { resolve(null); return; }
+      // base64が3MB超なら再圧縮
+      if (result.length > 3_000_000) {
+        console.log('[LINE] re-compressing, size was:', result.length);
+        result = compress(960, 0.6);
       }
-      const canvas = document.createElement('canvas');
-      canvas.width = width;
-      canvas.height = height;
-      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-      resolve(canvas.toDataURL('image/jpeg', quality));
+      console.log('[LINE] compressed size:', result.length);
+      resolve(result.length > 100 ? result : null);
     };
     img.src = dataUrl;
   });
