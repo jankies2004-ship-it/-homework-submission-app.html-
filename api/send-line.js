@@ -43,7 +43,7 @@ export default async function handler(req, res) {
   try {
     await push(userId, message);
 
-    if (type === 'submission' || type === 'reminder') {
+    if (type === 'submission' || type === 'reminder' || type === 'correction') {
       const familyGroupId = await getGroupId(userId);
       const groupId = familyGroupId || fallbackGroupId;
       if (groupId) {

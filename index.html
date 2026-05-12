@@ -795,6 +795,32 @@
     font-size: 13px; color: var(--gray);
   }
 
+  .correction-area {
+    margin-top: 14px;
+    border-top: 0.5px solid var(--border);
+    padding-top: 12px;
+  }
+  .correction-area h4 {
+    font-size: 12px; font-weight: 600; color: var(--gray); margin-bottom: 8px;
+  }
+  .correction-textarea {
+    width: 100%; padding: 8px 10px;
+    border: 0.5px solid var(--border); border-radius: var(--radius-sm);
+    font-size: 13px; font-family: inherit; resize: vertical;
+    min-height: 72px; background: #fafaf8; outline: none;
+    transition: border-color 0.2s;
+  }
+  .correction-textarea:focus { border-color: var(--green-mid); background: #fff; }
+  .correction-send-btn {
+    margin-top: 6px; width: 100%; padding: 9px;
+    background: #06C755; color: #fff; border: none;
+    border-radius: var(--radius-sm); font-size: 13px;
+    font-weight: 600; cursor: pointer; font-family: inherit;
+    transition: opacity 0.2s;
+  }
+  .correction-send-btn:hover { opacity: 0.85; }
+  .correction-send-btn:disabled { opacity: 0.5; cursor: default; }
+
   /* ===== PASSWORD MODAL ===== */
   .pw-overlay {
     display: none;
@@ -1940,6 +1966,26 @@ function renderStudentDetail(s) {
       }).join('')
     : '<div style="font-size:12px;color:#888;padding:8px 0">この月の提出はありません</div>';
 
+  const hasUserId = !!lineUsers[s.key];
+  const correctionHtml = hasUserId ? `
+    <div class="correction-area">
+      <h4>✏️ 添削返信（LINE送信）</h4>
+      <textarea class="correction-textarea" id="correction-${s.key}"
+        placeholder="添削コメントを入力してください…" onclick="event.stopPropagation()"></textarea>
+      <button class="correction-send-btn" id="correction-btn-${s.key}"
+        onclick="sendCorrection(event,'${s.key}','${s.name}')">
+        📨 LINEで送信
+      </button>
+    </div>
+  ` : `
+    <div class="correction-area">
+      <h4>✏️ 添削返信（LINE送信）</h4>
+      <div style="font-size:12px;color:var(--gray);padding:6px 0">
+        LINE IDが未設定です。催促パネルでIDを登録してください。
+      </div>
+    </div>
+  `;
+
   return `
     <div class="admin-cal-nav">
       <button onclick="adminChangeMonth(event,'${s.key}',-1)">‹</button>
@@ -1949,6 +1995,7 @@ function renderStudentDetail(s) {
     <div class="mini-cal-grid">${calHtml}</div>
     <div style="margin-top:12px;font-size:12px;font-weight:600;color:#5F5E5A;margin-bottom:6px">提出ファイル</div>
     <div class="sub-files">${filesHtml}</div>
+    ${correctionHtml}
   `;
 }
 
@@ -2125,6 +2172,39 @@ async function sendLineRemind(key, idx, name) {
   if (btn) { btn.textContent = ok ? '✔ 送信完了' : '❌ 送信失敗'; btn.style.opacity = '1'; }
   showToast(ok ? `✔ ${name}さんにLINEを送信しました` : '送信に失敗しました。userIdを確認してください');
   setTimeout(() => { if (btn) { btn.textContent = '📨 LINE送信'; } }, 3000);
+}
+
+async function sendCorrection(e, key, name) {
+  e.stopPropagation();
+  const userId = lineUsers[key];
+  if (!userId) { showToast('LINE IDが未設定です'); return; }
+  const textarea = document.getElementById(`correction-${key}`);
+  const btn = document.getElementById(`correction-btn-${key}`);
+  const msg = textarea ? textarea.value.trim() : '';
+  if (!msg) { showToast('メッセージを入力してください'); return; }
+
+  btn.textContent = '送信中...';
+  btn.disabled = true;
+  try {
+    const res = await fetch('/api/send-line', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, message: `✏️ 添削返信\n\n${msg}`, type: 'correction' }),
+    });
+    if (res.ok) {
+      textarea.value = '';
+      btn.textContent = '✔ 送信完了';
+      showToast(`✔ ${name}さんに添削を送信しました`);
+    } else {
+      btn.textContent = '❌ 送信失敗';
+      showToast('送信に失敗しました');
+    }
+  } catch {
+    btn.textContent = '❌ 送信失敗';
+    showToast('送信に失敗しました');
+  }
+  btn.disabled = false;
+  setTimeout(() => { btn.textContent = '📨 LINEで送信'; }, 3000);
 }
 
 function copyRemindMsg(idx, name) {
