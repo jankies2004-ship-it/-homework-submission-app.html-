@@ -1369,7 +1369,7 @@ function switchMode(mode) {
   document.getElementById('screen-' + mode).classList.add('active');
   document.getElementById('logout-btn').style.display = mode === 'admin' ? 'inline-block' : 'none';
   document.getElementById('parent-logout-btn').style.display = 'none';
-  if (mode === 'admin') renderAdmin();
+  if (mode === 'admin') { syncStudentUserIds().then(() => renderAdmin()); }
   if (mode === 'student') renderStudentCalendar();
   if (mode === 'points') renderPointsScreen();
 }
@@ -1393,7 +1393,7 @@ function checkPassword() {
     document.querySelector(`[onclick="switchMode('admin')"]`).classList.add('active');
     document.getElementById('screen-admin').classList.add('active');
     document.getElementById('logout-btn').style.display = 'inline-block';
-    renderAdmin();
+    syncStudentUserIds().then(() => renderAdmin());
   } else {
     const inp = document.getElementById('pw-input');
     inp.classList.add('error');
@@ -2080,6 +2080,22 @@ function saveLineUsers() {
   try { localStorage.setItem(LINE_USERS_KEY, JSON.stringify(lineUsers)); } catch(e) {}
 }
 loadLineUsers();
+
+async function syncStudentUserIds() {
+  try {
+    const res = await fetch('/api/get-student-users');
+    if (!res.ok) return;
+    const serverMap = await res.json();
+    let updated = false;
+    for (const [key, uid] of Object.entries(serverMap)) {
+      if (uid && !lineUsers[key]) {
+        lineUsers[key] = uid;
+        updated = true;
+      }
+    }
+    if (updated) saveLineUsers();
+  } catch {}
+}
 
 // LINE API経由でメッセージ送信
 async function sendLineMessage(userId, message) {

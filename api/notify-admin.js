@@ -1,4 +1,4 @@
-import { getGroupId } from './group-map.js';
+import { getGroupId, setStudentUserId } from './group-map.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -36,6 +36,12 @@ export default async function handler(req, res) {
     previewImageUrl: url,
   }));
   const messages = [textMsg, ...imageMessages];
+
+  // 生徒キーとuserIdを紐づけて保存（管理画面が自動で使えるようにする）
+  if (userId && name && school && grade) {
+    const studentKey = `${school}_${grade}_${name}`;
+    await setStudentUserId(studentKey, userId).catch(() => {});
+  }
 
   // 家庭グループIDをBlobから取得
   const familyGroupId = userId ? await getGroupId(userId) : null;
