@@ -101,11 +101,7 @@ export default async function handler(req, res) {
           }
         } catch (err) {
           console.error('グループ登録エラー:', err);
-          const adminId = process.env.ADMIN_LINE_USER_ID;
-          if (adminId) {
-            await pushMessage(adminId, `【エラー】グループ登録失敗\n${String(err)}`);
-          }
-          await replyMessage(replyToken, `登録に失敗しました。しばらく待ってから再度「登録」と送信してください。`);
+          await replyMessage(replyToken, `登録に失敗しました。\nエラー内容：${String(err)}`);
         }
       }
     }
