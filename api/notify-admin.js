@@ -1,3 +1,5 @@
+import { kv } from '@vercel/kv';
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -6,10 +8,10 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { name, school, grade, date, fileCount, imageUrls } = req.body;
+  const { name, school, grade, date, fileCount, imageUrls, userId } = req.body;
   const token = process.env.LINE_CHANNEL_ACCESS_TOKEN;
   const adminId = process.env.ADMIN_LINE_USER_ID;
-  const groupId = process.env.LINE_GROUP_ID;
+  const fallbackGroupId = process.env.LINE_GROUP_ID;
 
   if (!token) return res.status(500).json({ error: 'トークン未設定' });
 
@@ -27,7 +29,6 @@ export default async function handler(req, res) {
 
   const textMsg = { type: 'text', text: `✅ 課題提出通知\n\n${name}（${school} ${grade}）\nが課題を提出しました📚\n\nファイル数：${fileCount}件\n提出日：${date}` };
 
-  // テキスト＋画像を1回のリクエストにまとめる（LINEの上限は5件）
   const urls = Array.isArray(imageUrls) ? imageUrls.filter(Boolean) : [];
   const imageMessages = urls.slice(0, 4).map(url => ({
     type: 'image',
@@ -35,6 +36,13 @@ export default async function handler(req, res) {
     previewImageUrl: url,
   }));
   const messages = [textMsg, ...imageMessages];
+
+  // 家庭グループIDをKVから取得
+  let familyGroupId = null;
+  if (userId) {
+    familyGroupId = await kv.get(`user_group:${userId}`);
+  }
+  const groupId = familyGroupId || fallbackGroupId;
 
   try {
     await pushMessages(adminId, messages);

@@ -1,3 +1,5 @@
+import { kv } from '@vercel/kv';
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -14,7 +16,7 @@ export default async function handler(req, res) {
   }
 
   const token = process.env.LINE_CHANNEL_ACCESS_TOKEN;
-  const groupId = process.env.LINE_GROUP_ID;
+  const fallbackGroupId = process.env.LINE_GROUP_ID;
 
   if (!token) {
     return res.status(500).json({ error: 'アクセストークンが設定されていません' });
@@ -42,14 +44,13 @@ export default async function handler(req, res) {
     // 個人へのメッセージ送信
     await push(userId, message);
 
-    // グループへの通知（LINE_GROUP_ID が設定されている場合）
-    if (groupId) {
-      if (type === 'submission') {
-        // 課題提出通知
-        await push(groupId, `✅ 課題提出通知\n${message}`);
-      } else if (type === 'reminder') {
-        // 未提出催促通知
-        await push(groupId, `⚠️ 未提出催促\n${message}`);
+    // 家庭グループへの通知
+    if (type === 'submission' || type === 'reminder') {
+      const familyGroupId = await kv.get(`user_group:${userId}`);
+      const groupId = familyGroupId || fallbackGroupId;
+      if (groupId) {
+        const prefix = type === 'submission' ? '✅ 課題提出通知' : '⚠️ 未提出催促';
+        await push(groupId, `${prefix}\n${message}`);
       }
     }
 
