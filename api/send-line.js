@@ -47,8 +47,11 @@ export default async function handler(req, res) {
       const familyGroupId = await getGroupId(userId);
       const groupId = familyGroupId || fallbackGroupId;
       if (groupId) {
-        const prefix = type === 'submission' ? '✅ 課題提出通知' : '⚠️ 未提出催促';
-        await push(groupId, `${prefix}\n${message}`);
+        let groupMessage;
+        if (type === 'submission') groupMessage = `✅ 課題提出通知\n${message}`;
+        else if (type === 'reminder') groupMessage = `⚠️ 未提出催促\n${message}`;
+        else groupMessage = message;
+        await push(groupId, groupMessage);
       }
     }
 
