@@ -1,4 +1,4 @@
-import { kv } from '@vercel/kv';
+import { getGroupId } from './group-map.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -37,18 +37,14 @@ export default async function handler(req, res) {
   }));
   const messages = [textMsg, ...imageMessages];
 
-  // 家庭グループIDをKVから取得
-  let familyGroupId = null;
-  if (userId) {
-    familyGroupId = await kv.get(`user_group:${userId}`);
-  }
+  // 家庭グループIDをBlobから取得
+  const familyGroupId = userId ? await getGroupId(userId) : null;
   const groupId = familyGroupId || fallbackGroupId;
 
   try {
     await pushMessages(adminId, messages);
     await pushMessages(groupId, messages);
 
-    // 5枚以上の場合は残りを追加送信
     for (let i = 4; i < urls.length; i += 5) {
       const extra = urls.slice(i, i + 5).map(url => ({
         type: 'image',

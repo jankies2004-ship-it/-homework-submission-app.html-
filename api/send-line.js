@@ -1,4 +1,4 @@
-import { kv } from '@vercel/kv';
+import { getGroupId } from './group-map.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -41,12 +41,10 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 個人へのメッセージ送信
     await push(userId, message);
 
-    // 家庭グループへの通知
     if (type === 'submission' || type === 'reminder') {
-      const familyGroupId = await kv.get(`user_group:${userId}`);
+      const familyGroupId = await getGroupId(userId);
       const groupId = familyGroupId || fallbackGroupId;
       if (groupId) {
         const prefix = type === 'submission' ? '✅ 課題提出通知' : '⚠️ 未提出催促';

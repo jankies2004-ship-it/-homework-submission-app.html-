@@ -1,4 +1,4 @@
-import { kv } from '@vercel/kv';
+import { setGroupId } from './group-map.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
@@ -40,7 +40,6 @@ export default async function handler(req, res) {
     // 友だち追加
     if (event.type === 'follow') {
       const userId = event.source.userId;
-      console.log('新しいフォロワー userId:', userId);
       await pushMessage(
         userId,
         `【エイメイ英語課題Bot】\n友だち追加ありがとうございます！\n\n課題の提出・催促連絡が届きます📚\n\n自分のIDを確認したい場合は「ID」と送信してください。`
@@ -50,14 +49,10 @@ export default async function handler(req, res) {
     // グループ参加
     if (event.type === 'join') {
       const groupId = event.source.groupId || event.source.roomId;
-      console.log('グループ参加 groupId:', groupId);
-      // 登録待ち状態をKVに保存
-      await kv.set(`pending_group:${groupId}`, true, { ex: 86400 }); // 24時間有効
       await pushMessage(
         groupId,
         `【エイメイ英語課題Bot】\nグループに参加しました！\n\n📝 家庭グループとして登録するには：\n生徒本人がこのグループで「登録」と送信してください。\n\n登録すると、課題提出・未提出の通知がこのグループに届きます📚`
       );
-      // 管理者にグループIDを通知
       const adminId = process.env.ADMIN_LINE_USER_ID;
       if (adminId) {
         await pushMessage(
@@ -85,9 +80,7 @@ export default async function handler(req, res) {
       // グループ内での「登録」コマンド
       if (groupId && text === '登録') {
         try {
-          await kv.set(`user_group:${userId}`, groupId);
-          await kv.del(`pending_group:${groupId}`);
-          console.log(`グループ登録完了 userId:${userId} groupId:${groupId}`);
+          await setGroupId(userId, groupId);
           await replyMessage(
             replyToken,
             `✅ 家庭グループとして登録しました！\n\nこれからあなた（userID：${userId}）への課題通知がこのグループにも届きます📚`
