@@ -84,16 +84,14 @@ export default async function handler(req, res) {
 
       // グループ内での「登録」コマンド
       if (groupId && text === '登録') {
-        const isPending = await kv.get(`pending_group:${groupId}`);
-        if (isPending) {
-          // userId → groupId のマッピングを保存
+        try {
           await kv.set(`user_group:${userId}`, groupId);
           await kv.del(`pending_group:${groupId}`);
+          console.log(`グループ登録完了 userId:${userId} groupId:${groupId}`);
           await replyMessage(
             replyToken,
             `✅ 家庭グループとして登録しました！\n\nこれからあなた（userID：${userId}）への課題通知がこのグループにも届きます📚`
           );
-          // 管理者に通知
           const adminId = process.env.ADMIN_LINE_USER_ID;
           if (adminId) {
             await pushMessage(
@@ -101,6 +99,9 @@ export default async function handler(req, res) {
               `【Bot管理通知】\n家庭グループが登録されました\n\nuserID：${userId}\nグループID：${groupId}`
             );
           }
+        } catch (err) {
+          console.error('グループ登録エラー:', err);
+          await replyMessage(replyToken, `登録に失敗しました。しばらく待ってから再度「登録」と送信してください。`);
         }
       }
     }
