@@ -53,8 +53,7 @@ export default async function handler(req, res) {
   try {
     // 生徒本人に送信
     await pushMessages(userId, studentMessages);
-    // 管理者・家庭グループに送信
-    await pushMessages(adminId, messages);
+    // 家庭グループに送信
     await pushMessages(groupId, messages);
 
     for (let i = 4; i < urls.length; i += 5) {
@@ -64,7 +63,6 @@ export default async function handler(req, res) {
         previewImageUrl: url,
       }));
       await pushMessages(userId, extra);
-      await pushMessages(adminId, extra);
       await pushMessages(groupId, extra);
     }
 
