@@ -163,6 +163,41 @@
   .cal-day .day-num { font-size: 10px; color: var(--gray); }
   .cal-day.submitted .day-num { color: var(--green); font-weight: 600; }
 
+  /* Point card */
+  .point-card {
+    background: var(--green);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 16px;
+    color: #fff;
+    display: none;
+    align-items: center;
+    gap: 16px;
+  }
+  .point-card.show { display: flex; }
+  .point-coin {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; flex-shrink: 0;
+  }
+  .point-info { flex: 1; }
+  .point-label { font-size: 11px; opacity: 0.8; margin-bottom: 2px; }
+  .point-num {
+    font-size: 34px; font-weight: 700; line-height: 1;
+    display: flex; align-items: baseline; gap: 5px;
+  }
+  .point-unit { font-size: 13px; font-weight: 400; opacity: 0.85; }
+  .point-today { font-size: 11px; opacity: 0.75; margin-top: 4px; }
+  .point-today.earned { opacity: 1; font-weight: 600; }
+  @keyframes pointPop {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.35); }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+  }
+  .point-pop { animation: pointPop 0.4s ease; }
+
   /* Toast */
   .toast {
     position: fixed; bottom: 24px; left: 50%;
@@ -397,6 +432,15 @@
 
 <!-- STUDENT SCREEN -->
 <div id="screen-student" class="screen active">
+
+  <div class="point-card" id="point-card">
+    <div class="point-coin">⭐</div>
+    <div class="point-info">
+      <div class="point-label">累計ポイント</div>
+      <div class="point-num" id="point-num">0<span class="point-unit">pt</span></div>
+      <div class="point-today" id="point-today">本日はまだ未提出</div>
+    </div>
+  </div>
 
   <div class="card">
     <h2>📝 プロフィール</h2>
@@ -702,10 +746,40 @@ function changeStudentMonth(delta) {
   renderStudentCalendar();
 }
 
-document.getElementById('s-name').addEventListener('input', renderStudentCalendar);
-document.getElementById('s-school').addEventListener('change', renderStudentCalendar);
-document.getElementById('s-grade').addEventListener('change', renderStudentCalendar);
+document.getElementById('s-name').addEventListener('input', () => { renderStudentCalendar(); renderPointCard(); });
+document.getElementById('s-school').addEventListener('change', () => { renderStudentCalendar(); renderPointCard(); });
+document.getElementById('s-grade').addEventListener('change', () => { renderStudentCalendar(); renderPointCard(); });
 renderStudentCalendar();
+
+// ===== POINTS =====
+function calcPoints(key) {
+  return new Set((submissions[key] || []).map(s => s.date)).size;
+}
+
+function renderPointCard() {
+  const name = document.getElementById('s-name').value.trim();
+  const school = document.getElementById('s-school').value;
+  const grade = document.getElementById('s-grade').value;
+  const card = document.getElementById('point-card');
+  if (!name || !school || !grade) { card.classList.remove('show'); return; }
+  card.classList.add('show');
+  const key = school + '_' + grade + '_' + name;
+  const pts = calcPoints(key);
+  document.getElementById('point-num').innerHTML = `${pts}<span class="point-unit">pt</span>`;
+  const t = new Date();
+  const todayStr = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
+  const todayDone = (submissions[key] || []).some(s => s.date === todayStr);
+  const el = document.getElementById('point-today');
+  el.textContent = todayDone ? '✔ 今日のポイント獲得済み！' : '本日はまだ未提出';
+  el.className = 'point-today' + (todayDone ? ' earned' : '');
+}
+
+function animatePoint() {
+  const el = document.getElementById('point-num');
+  el.classList.remove('point-pop');
+  void el.offsetWidth;
+  el.classList.add('point-pop');
+}
 
 // ===== FILE HANDLING =====
 function handleFiles(fileList) {
@@ -755,12 +829,15 @@ function submitHomework() {
   entry.files.push(...pendingFiles);
 
   const imagesToUpload = pendingFiles.filter(f => f.type.startsWith('image/'));
+  const isNewDay = entry.files.length === pendingFiles.length; // entry was just created
   saveData();
   pendingFiles = [];
   renderPreview();
   document.getElementById('file-input').value = '';
   renderStudentCalendar();
-  showToast('✔ 提出しました！');
+  renderPointCard();
+  if (isNewDay) animatePoint();
+  showToast(isNewDay ? '✔ 提出完了！+1ポイント獲得！' : '✔ 提出しました！（本日分のポイント獲得済み）');
 
   (async () => {
     try {
