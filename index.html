@@ -493,6 +493,11 @@
       <label>氏名</label>
       <input type="text" id="s-name" placeholder="例：山田 太郎">
     </div>
+    <div class="form-row">
+      <label>LINE ID（任意）</label>
+      <input type="text" id="s-line-id" placeholder="Uで始まる文字列（例：U1234567890abcdef）" oninput="saveLineMyId()">
+      <div style="font-size:11px;color:var(--gray);margin-top:4px">入力するとLINEに提出確認が届きます。LINEのBotに「ID」と送ると確認できます。</div>
+    </div>
   </div>
 
   <div class="card">
@@ -745,6 +750,20 @@ function changeStudentMonth(delta) {
   studentMonth.setMonth(studentMonth.getMonth() + delta);
   renderStudentCalendar();
 }
+
+// ===== 生徒自身のLINE ID =====
+function saveLineMyId() {
+  const val = document.getElementById('s-line-id').value.trim();
+  try { localStorage.setItem('eimei_my_line_id', val); } catch(e) {}
+}
+function loadLineMyId() {
+  try {
+    const val = localStorage.getItem('eimei_my_line_id') || '';
+    const el = document.getElementById('s-line-id');
+    if (el) el.value = val;
+  } catch(e) {}
+}
+loadLineMyId();
 
 document.getElementById('s-name').addEventListener('input', () => { renderStudentCalendar(); renderPointCard(); });
 document.getElementById('s-school').addEventListener('change', () => { renderStudentCalendar(); renderPointCard(); });

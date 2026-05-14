@@ -47,7 +47,13 @@ export default async function handler(req, res) {
   const familyGroupId = userId ? await getGroupId(userId) : null;
   const groupId = familyGroupId || fallbackGroupId;
 
+  const studentMsg = { type: 'text', text: `✅ 提出完了！\n\n${name}（${grade}）\n課題を提出しました📚\n\nファイル数：${fileCount}件\n提出日：${date}` };
+  const studentMessages = [studentMsg, ...imageMessages];
+
   try {
+    // 生徒本人に送信
+    await pushMessages(userId, studentMessages);
+    // 管理者・家庭グループに送信
     await pushMessages(adminId, messages);
     await pushMessages(groupId, messages);
 
@@ -57,6 +63,7 @@ export default async function handler(req, res) {
         originalContentUrl: url,
         previewImageUrl: url,
       }));
+      await pushMessages(userId, extra);
       await pushMessages(adminId, extra);
       await pushMessages(groupId, extra);
     }
