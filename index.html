@@ -9,8 +9,6 @@
     --green: #3B6D11;
     --green-light: #EAF3DE;
     --green-mid: #639922;
-    --teal: #1D9E75;
-    --teal-light: #E1F5EE;
     --gray: #5F5E5A;
     --gray-light: #F1EFE8;
     --border: rgba(0,0,0,0.12);
@@ -26,7 +24,6 @@
     min-height: 100vh;
   }
 
-  /* ===== HEADER ===== */
   .app-header {
     background: var(--green);
     color: #fff;
@@ -48,7 +45,7 @@
     gap: 2px;
   }
   .mode-btn {
-    padding: 5px 14px;
+    padding: 5px 18px;
     border: none;
     border-radius: 16px;
     font-size: 12px;
@@ -59,20 +56,32 @@
     transition: all 0.2s;
   }
   .mode-btn.active { background: #fff; color: var(--green); }
+  .admin-logout {
+    font-size: 11px;
+    color: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.12);
+    border: none;
+    border-radius: 10px;
+    padding: 4px 10px;
+    cursor: pointer;
+    margin-left: 8px;
+    font-family: inherit;
+  }
+  .admin-logout:hover { background: rgba(255,255,255,0.22); color: #fff; }
 
-  /* ===== SCREENS ===== */
   .screen { display: none; padding: 20px; max-width: 680px; margin: 0 auto; }
   .screen.active { display: block; }
 
-  /* ===== STUDENT SCREEN ===== */
-  .student-card {
+  /* Cards */
+  .card {
     background: var(--white);
     border-radius: var(--radius);
     border: 0.5px solid var(--border);
     padding: 20px;
     margin-bottom: 16px;
   }
-  .student-card h2 { font-size: 15px; font-weight: 600; margin-bottom: 16px; color: var(--green); }
+  .card h2 { font-size: 15px; font-weight: 600; margin-bottom: 16px; color: var(--green); }
+
   .form-row { margin-bottom: 14px; }
   .form-row label { display: block; font-size: 12px; color: var(--gray); margin-bottom: 5px; font-weight: 500; }
   .form-row input, .form-row select {
@@ -88,21 +97,19 @@
   }
   .form-row input:focus, .form-row select:focus { border-color: var(--green-mid); background: #fff; }
 
-  /* Upload area */
+  /* Upload */
   .upload-area {
     border: 2px dashed #C0DD97;
     border-radius: var(--radius);
     padding: 32px 20px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.2s;
     background: var(--green-light);
     position: relative;
+    transition: all 0.2s;
   }
   .upload-area:hover { border-color: var(--green-mid); background: #dff0c4; }
-  .upload-area input[type="file"] {
-    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
-  }
+  .upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
   .upload-icon { font-size: 32px; margin-bottom: 10px; }
   .upload-area p { font-size: 13px; color: var(--gray); line-height: 1.6; }
   .upload-area strong { color: var(--green); display: block; margin-bottom: 4px; font-size: 14px; }
@@ -115,338 +122,131 @@
     overflow: hidden;
     border: 0.5px solid var(--border);
   }
-  .preview-item img { width: 100%; height: 100%; object-fit: cover; }
-  .preview-item video { width: 100%; height: 100%; object-fit: cover; }
+  .preview-item img, .preview-item video { width: 100%; height: 100%; object-fit: cover; }
   .preview-remove {
     position: absolute; top: 2px; right: 2px;
     background: rgba(0,0,0,0.6);
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    width: 18px; height: 18px;
-    font-size: 10px;
-    cursor: pointer;
+    color: #fff; border: none; border-radius: 50%;
+    width: 18px; height: 18px; font-size: 10px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
   }
 
   .submit-btn {
-    width: 100%;
-    padding: 14px;
-    background: var(--green);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-    letter-spacing: 0.04em;
-    font-family: inherit;
+    width: 100%; padding: 14px;
+    background: var(--green); color: #fff; border: none;
+    border-radius: var(--radius-sm); font-size: 15px; font-weight: 600;
+    cursor: pointer; transition: background 0.2s;
+    letter-spacing: 0.04em; font-family: inherit; margin-top: 12px;
   }
   .submit-btn:hover { background: var(--green-mid); }
   .submit-btn:disabled { background: #C0DD97; cursor: default; }
 
   /* Calendar */
-  .calendar-section { margin-top: 20px; }
-  .calendar-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-  }
-  .calendar-header h3 { font-size: 14px; font-weight: 600; }
-  .cal-nav {
-    display: flex; align-items: center; gap: 8px;
-  }
+  .calendar-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .cal-nav { display: flex; align-items: center; gap: 8px; }
   .cal-nav button {
-    border: 0.5px solid var(--border);
-    background: var(--white);
-    border-radius: var(--radius-sm);
-    width: 28px; height: 28px;
-    cursor: pointer;
-    font-size: 14px;
-    display: flex; align-items: center; justify-content: center;
+    border: 0.5px solid var(--border); background: var(--white);
+    border-radius: var(--radius-sm); width: 28px; height: 28px;
+    cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;
   }
   .cal-nav span { font-size: 13px; font-weight: 600; min-width: 90px; text-align: center; }
-
-  .calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 3px;
-  }
-  .cal-dow {
-    text-align: center;
-    font-size: 10px;
-    color: var(--gray);
-    padding: 4px 0;
-    font-weight: 600;
-  }
+  .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .cal-dow { text-align: center; font-size: 10px; color: var(--gray); padding: 4px 0; font-weight: 600; }
   .cal-day {
-    aspect-ratio: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    font-size: 11px;
-    cursor: default;
-    gap: 1px;
-    transition: background 0.15s;
-    min-height: 36px;
+    aspect-ratio: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    border-radius: 6px; font-size: 11px; cursor: default; gap: 1px; min-height: 36px;
   }
-  .cal-day.empty { background: transparent; }
-  .cal-day.today { background: var(--teal-light); font-weight: 700; color: var(--teal); }
+  .cal-day.today { background: #E1F5EE; font-weight: 700; color: #1D9E75; }
   .cal-day.submitted { background: var(--green-light); }
-  .cal-day .check-mark {
-    font-size: 14px;
-    color: var(--green);
-  }
+  .cal-day .check-mark { font-size: 14px; color: var(--green); }
   .cal-day .day-num { font-size: 10px; color: var(--gray); }
   .cal-day.submitted .day-num { color: var(--green); font-weight: 600; }
 
-  /* ===== POINT DISPLAY (student) ===== */
-  .point-card {
-    background: var(--green);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 16px;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  .point-coin {
-    width: 56px; height: 56px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.18);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 26px;
-    flex-shrink: 0;
-  }
-  .point-info { flex: 1; }
-  .point-label { font-size: 11px; opacity: 0.8; margin-bottom: 2px; }
-  .point-num {
-    font-size: 36px; font-weight: 700; line-height: 1;
-    display: flex; align-items: baseline; gap: 6px;
-  }
-  .point-unit { font-size: 14px; font-weight: 400; opacity: 0.85; }
-  .point-today {
-    font-size: 11px; opacity: 0.75; margin-top: 4px;
-  }
-  .point-today.earned { opacity: 1; font-weight: 600; }
-
-  /* Point pop animation */
-  @keyframes pointPop {
-    0% { transform: scale(1); }
-    40% { transform: scale(1.35); }
-    70% { transform: scale(0.9); }
-    100% { transform: scale(1); }
-  }
-  .point-pop { animation: pointPop 0.4s ease; }
-
   /* Toast */
   .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
+    position: fixed; bottom: 24px; left: 50%;
     transform: translateX(-50%) translateY(80px);
-    background: var(--green);
-    color: #fff;
-    padding: 12px 24px;
-    border-radius: 24px;
-    font-size: 14px;
-    font-weight: 500;
-    transition: transform 0.3s ease;
-    z-index: 999;
-    white-space: nowrap;
+    background: var(--green); color: #fff;
+    padding: 12px 24px; border-radius: 24px;
+    font-size: 14px; font-weight: 500;
+    transition: transform 0.3s ease; z-index: 999; white-space: nowrap;
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
 
-  /* ===== ADMIN SCREEN ===== */
+  /* Admin toolbar */
   .admin-toolbar {
-    background: var(--white);
-    border-radius: var(--radius);
-    border: 0.5px solid var(--border);
-    padding: 14px 16px;
-    margin-bottom: 16px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+    background: var(--white); border-radius: var(--radius);
+    border: 0.5px solid var(--border); padding: 14px 16px;
+    margin-bottom: 16px; display: flex; gap: 10px; flex-wrap: wrap;
   }
   .admin-toolbar input, .admin-toolbar select {
-    flex: 1;
-    min-width: 120px;
-    padding: 8px 12px;
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-    background: #fafaf8;
-    outline: none;
-    font-family: inherit;
+    flex: 1; min-width: 120px; padding: 8px 12px;
+    border: 0.5px solid var(--border); border-radius: var(--radius-sm);
+    font-size: 13px; background: #fafaf8; outline: none; font-family: inherit;
   }
   .admin-toolbar input:focus, .admin-toolbar select:focus { border-color: var(--green-mid); }
 
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 16px;
-  }
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
   .stat-card {
-    background: var(--white);
-    border-radius: var(--radius-sm);
-    border: 0.5px solid var(--border);
-    padding: 14px;
-    text-align: center;
+    background: var(--white); border-radius: var(--radius-sm);
+    border: 0.5px solid var(--border); padding: 14px; text-align: center;
   }
   .stat-card .stat-num { font-size: 24px; font-weight: 700; color: var(--green); }
   .stat-card .stat-label { font-size: 11px; color: var(--gray); margin-top: 4px; }
 
+  /* Student list */
   .student-list { display: flex; flex-direction: column; gap: 10px; }
   .student-row {
-    background: var(--white);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px 16px;
-    cursor: pointer;
-    transition: border-color 0.2s;
+    background: var(--white); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 14px 16px; cursor: pointer; transition: border-color 0.2s;
   }
   .student-row:hover { border-color: var(--green-mid); }
   .student-row.expanded { border-color: var(--green); }
-  .student-row-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+  .student-row-header { display: flex; align-items: center; gap: 12px; }
   .student-avatar {
-    width: 38px; height: 38px;
-    border-radius: 50%;
+    width: 38px; height: 38px; border-radius: 50%;
     background: var(--green-light);
     display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 700; color: var(--green);
-    flex-shrink: 0;
+    font-size: 13px; font-weight: 700; color: var(--green); flex-shrink: 0;
   }
   .student-info { flex: 1; }
   .student-info .name { font-size: 14px; font-weight: 600; }
   .student-info .school { font-size: 11px; color: var(--gray); margin-top: 1px; }
   .submission-badge {
-    background: var(--green-light);
-    color: var(--green);
-    font-size: 11px;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 12px;
+    background: var(--green-light); color: var(--green);
+    font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 12px;
   }
   .submission-badge.zero { background: var(--gray-light); color: var(--gray); }
 
-  .point-badge {
-    background: #FAEEDA;
-    color: #854F0B;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 12px;
-  }
-
-  /* Mini calendar in admin */
-  .admin-detail {
-    display: none;
-    margin-top: 14px;
-    padding-top: 14px;
-    border-top: 0.5px solid var(--border);
-  }
+  .admin-detail { display: none; margin-top: 14px; padding-top: 14px; border-top: 0.5px solid var(--border); }
   .admin-detail.open { display: block; }
-  .mini-calendar { margin-bottom: 14px; }
-  .mini-cal-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 2px;
-    margin-top: 8px;
-  }
+
+  .mini-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-top: 8px; }
   .mini-cal-day {
-    aspect-ratio: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    font-size: 9px;
-    min-height: 28px;
-    cursor: default;
+    aspect-ratio: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    border-radius: 4px; font-size: 9px; min-height: 28px;
   }
   .mini-cal-day.submitted { background: var(--green-light); }
   .mini-cal-day .mini-check { font-size: 10px; color: var(--green); }
   .mini-cal-day .mini-num { font-size: 9px; color: #888; }
   .mini-cal-day.submitted .mini-num { color: var(--green); font-weight: 600; }
 
-  /* Submission files */
   .sub-files { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
   .sub-file {
-    background: var(--gray-light);
-    border-radius: var(--radius-sm);
-    overflow: hidden;
-    width: 90px;
-    cursor: pointer;
-    border: 0.5px solid var(--border);
-    transition: border-color 0.2s;
+    background: var(--gray-light); border-radius: var(--radius-sm);
+    overflow: hidden; width: 90px; cursor: pointer;
+    border: 0.5px solid var(--border); transition: border-color 0.2s;
   }
   .sub-file:hover { border-color: var(--green-mid); }
   .sub-file img, .sub-file video { width: 100%; height: 70px; object-fit: cover; display: block; }
   .sub-file-label {
-    font-size: 9px;
-    color: var(--gray);
-    padding: 3px 5px;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 9px; color: var(--gray); padding: 3px 5px;
+    text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
 
-  .no-submissions { font-size: 13px; color: var(--gray); text-align: center; padding: 24px; }
-
-  /* Lightbox */
-  .lightbox {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
-    z-index: 9999;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  .lightbox.open { display: flex; }
-  .lightbox img, .lightbox video {
-    max-width: 100%;
-    max-height: 90vh;
-    border-radius: var(--radius-sm);
-  }
-  .lightbox-close {
-    position: fixed;
-    top: 16px; right: 16px;
-    background: rgba(255,255,255,0.2);
-    border: none;
-    color: #fff;
-    font-size: 20px;
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-  }
-
-  /* Month nav in admin per-student */
-  .mini-cal-nav {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 6px;
-  }
-  .mini-cal-nav span { font-size: 12px; font-weight: 600; }
-  .mini-cal-nav button {
-    border: none; background: transparent; cursor: pointer; font-size: 14px; padding: 2px 6px; color: var(--gray);
-  }
-
-  .admin-cal-nav {
-    display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
-  }
+  .admin-cal-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
   .admin-cal-nav span { font-size: 13px; font-weight: 600; min-width: 80px; text-align: center; }
   .admin-cal-nav button {
     border: 0.5px solid var(--border); background: var(--white); border-radius: 6px;
@@ -454,456 +254,117 @@
     display: flex; align-items: center; justify-content: center;
   }
 
-  @media (max-width: 480px) {
-    .stats-row { grid-template-columns: repeat(3, 1fr); }
-    .stat-card .stat-num { font-size: 20px; }
+  .no-submissions { font-size: 13px; color: var(--gray); text-align: center; padding: 24px; }
+
+  /* Lightbox */
+  .lightbox {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85); z-index: 9999;
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox-close {
+    position: fixed; top: 16px; right: 16px;
+    background: rgba(255,255,255,0.2); border: none; color: #fff;
+    font-size: 20px; width: 36px; height: 36px; border-radius: 50%;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
   }
 
-  /* ===== RANKING SCREEN ===== */
-  .rank-header-card {
-    background: linear-gradient(135deg, #27500A 0%, #639922 100%);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 16px;
-    color: #fff;
-  }
-  .rank-header-card h2 { font-size: 15px; font-weight: 600; margin-bottom: 14px; opacity: 0.9; }
-  .rank-my-pts {
-    display: flex; align-items: baseline; gap: 8px;
-  }
-  .rank-my-pts .big { font-size: 48px; font-weight: 700; line-height: 1; }
-  .rank-my-pts .unit { font-size: 16px; opacity: 0.8; }
-  .rank-my-meta {
-    margin-top: 10px;
-    display: flex; gap: 14px;
-  }
-  .rank-my-meta span {
-    font-size: 12px;
-    background: rgba(255,255,255,0.15);
-    border-radius: 10px;
-    padding: 3px 10px;
-  }
-
-  .rank-section-title {
-    font-size: 12px; font-weight: 700; color: var(--gray);
-    letter-spacing: 0.05em; text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-
-  /* History list */
-  .history-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 6px; }
-  .history-item {
-    background: var(--white);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 10px 14px;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .history-dot {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: var(--green-light);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; flex-shrink: 0;
-  }
-  .history-info { flex: 1; }
-  .history-date { font-size: 13px; font-weight: 600; }
-  .history-count { font-size: 11px; color: var(--gray); margin-top: 1px; }
-  .history-pt {
-    font-size: 13px; font-weight: 700; color: var(--green);
-    background: var(--green-light);
-    border-radius: 10px; padding: 2px 10px;
-  }
-
-  /* Ranking list */
-  .ranking-list { display: flex; flex-direction: column; gap: 6px; }
-  .ranking-item {
-    background: var(--white);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 10px 14px;
-    display: flex; align-items: center; gap: 12px;
-    transition: border-color 0.2s;
-  }
-  .ranking-item.me { border-color: var(--green); background: var(--green-light); }
-  .rank-num {
-    width: 28px; text-align: center;
-    font-size: 15px; font-weight: 700; color: var(--gray);
-    flex-shrink: 0;
-  }
-  .rank-num.gold { color: #BA7517; font-size: 18px; }
-  .rank-num.silver { color: #888780; font-size: 18px; }
-  .rank-num.bronze { color: #854F0B; font-size: 16px; }
-  .rank-name { flex: 1; font-size: 13px; font-weight: 600; }
-  .rank-name .rank-school { font-size: 11px; color: var(--gray); font-weight: 400; margin-top: 1px; }
-  .rank-pts { font-size: 14px; font-weight: 700; color: var(--green); }
-  .rank-grade-tab {
-    display: flex; gap: 4px; margin-bottom: 12px; flex-wrap: wrap;
-  }
-  .rank-grade-btn {
-    padding: 5px 14px;
-    border: 0.5px solid var(--border);
-    border-radius: 16px;
-    font-size: 12px; font-weight: 500;
-    cursor: pointer;
-    background: var(--white);
-    color: var(--gray);
-    transition: all 0.15s;
-    font-family: inherit;
-  }
-  .rank-grade-btn.active { background: var(--green); color: #fff; border-color: var(--green); }
-
-  .rank-no-profile {
-    text-align: center; padding: 40px 20px;
-    color: var(--gray); font-size: 14px; line-height: 1.8;
-  }
-
-  /* ===== PARENT SCREEN ===== */
-  .parent-search-card {
-    background: var(--white);
-    border-radius: var(--radius);
-    border: 0.5px solid var(--border);
-    padding: 20px;
-    margin-bottom: 16px;
-  }
-  .parent-search-card h2 { font-size: 15px; font-weight: 600; margin-bottom: 14px; color: #185FA5; }
-  .parent-search-row {
-    display: flex; gap: 8px; flex-wrap: wrap;
-  }
-  .parent-search-row select, .parent-search-row input {
-    flex: 1; min-width: 100px;
-    padding: 10px 12px;
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    background: #fafaf8;
-    outline: none;
-    font-family: inherit;
-    transition: border-color 0.2s;
-  }
-  .parent-search-row select:focus, .parent-search-row input:focus { border-color: #378ADD; }
-  .parent-search-btn {
-    padding: 10px 20px;
-    background: #185FA5;
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-    white-space: nowrap;
-    transition: background 0.2s;
-  }
-  .parent-search-btn:hover { background: #378ADD; }
-
-  .parent-header-card {
-    background: linear-gradient(135deg, #0C447C 0%, #378ADD 100%);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 16px;
-    color: #fff;
-  }
-  .parent-header-card .ph-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-  .parent-header-card .ph-meta { font-size: 12px; opacity: 0.8; margin-bottom: 14px; }
-  .parent-stats {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-  }
-  .parent-stat {
-    background: rgba(255,255,255,0.15);
-    border-radius: var(--radius-sm);
-    padding: 10px;
-    text-align: center;
-  }
-  .parent-stat .ps-num { font-size: 22px; font-weight: 700; }
-  .parent-stat .ps-label { font-size: 10px; opacity: 0.85; margin-top: 2px; }
-
-  .parent-cal-nav {
-    display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
-  }
-  .parent-cal-nav span { font-size: 13px; font-weight: 600; }
-  .parent-cal-nav button {
-    border: 0.5px solid var(--border); background: var(--white);
-    border-radius: 6px; width: 28px; height: 28px;
-    cursor: pointer; font-size: 14px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .parent-cal-grid {
-    display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px;
-  }
-  .parent-cal-day {
-    aspect-ratio: 1; display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    border-radius: 6px; font-size: 11px; min-height: 36px; gap: 1px;
-  }
-  .parent-cal-day.submitted { background: #E6F1FB; }
-  .parent-cal-day.submitted .pcd-num { color: #185FA5; font-weight: 600; }
-  .parent-cal-day .pcd-check { font-size: 13px; color: #185FA5; }
-  .parent-cal-day .pcd-num { font-size: 10px; color: var(--gray); }
-  .parent-cal-day.today { background: var(--teal-light); }
-  .parent-cal-day.today .pcd-num { color: var(--teal); font-weight: 700; }
-
-  .parent-files { display: flex; flex-wrap: wrap; gap: 8px; }
-  .parent-file {
-    background: #E6F1FB;
-    border-radius: var(--radius-sm);
-    overflow: hidden;
-    width: 90px;
-    cursor: pointer;
-    border: 0.5px solid rgba(56,138,221,0.25);
-    transition: border-color 0.2s;
-  }
-  .parent-file:hover { border-color: #378ADD; }
-  .parent-file img, .parent-file video { width: 100%; height: 70px; object-fit: cover; display: block; }
-  .parent-file-label { font-size: 9px; color: #185FA5; padding: 3px 5px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-  .parent-no-result {
-    text-align: center; padding: 40px 20px;
-    color: var(--gray); font-size: 14px; line-height: 1.8;
-  }
-
-  .parent-logout {
-    font-size: 11px;
-    color: rgba(255,255,255,0.7);
-    background: rgba(255,255,255,0.12);
-    border: none;
-    border-radius: 10px;
-    padding: 4px 10px;
-    cursor: pointer;
-    margin-left: 4px;
-    font-family: inherit;
-    transition: background 0.2s;
-  }
-  .parent-logout:hover { background: rgba(255,255,255,0.22); color: #fff; }
-
-  /* ===== REMIND PANEL ===== */
+  /* Remind panel */
   .remind-btn {
-    width: 100%;
-    padding: 12px;
-    background: #F7C175;
-    color: #633806;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: inherit;
-    margin-bottom: 16px;
+    width: 100%; padding: 12px;
+    background: #F7C175; color: #633806; border: none;
+    border-radius: var(--radius-sm); font-size: 14px; font-weight: 700;
+    cursor: pointer; font-family: inherit; margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
     transition: background 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
   }
   .remind-btn:hover { background: #EF9F27; }
 
   .remind-panel {
-    background: var(--white);
-    border: 0.5px solid #FAC775;
-    border-radius: var(--radius);
-    margin-bottom: 16px;
-    overflow: hidden;
+    background: var(--white); border: 0.5px solid #FAC775;
+    border-radius: var(--radius); margin-bottom: 16px; overflow: hidden;
   }
   .remind-panel-header {
-    background: #FAEEDA;
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    background: #FAEEDA; padding: 14px 16px;
+    display: flex; align-items: center; justify-content: space-between;
   }
   .remind-panel-header h3 { font-size: 14px; font-weight: 700; color: #633806; }
-  .remind-panel-header .rph-count {
-    font-size: 12px;
-    background: #EF9F27;
-    color: #fff;
-    border-radius: 10px;
-    padding: 2px 10px;
-    font-weight: 700;
+  .rph-count {
+    font-size: 12px; background: #EF9F27; color: #fff;
+    border-radius: 10px; padding: 2px 10px; font-weight: 700;
   }
-  .remind-close-btn {
-    background: none; border: none; color: #854F0B;
-    cursor: pointer; font-size: 16px; padding: 0 4px;
-  }
+  .remind-close-btn { background: none; border: none; color: #854F0B; cursor: pointer; font-size: 16px; padding: 0 4px; }
 
-  .remind-msg-template {
-    padding: 12px 16px;
-    border-bottom: 0.5px solid #FAC775;
-  }
-  .remind-msg-template label {
-    font-size: 11px; color: var(--gray); font-weight: 600; display: block; margin-bottom: 6px;
-  }
+  .remind-msg-template { padding: 12px 16px; border-bottom: 0.5px solid #FAC775; }
+  .remind-msg-template label { font-size: 11px; color: var(--gray); font-weight: 600; display: block; margin-bottom: 6px; }
   .remind-msg-template textarea {
-    width: 100%;
-    padding: 8px 10px;
-    border: 0.5px solid #FAC775;
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-    font-family: inherit;
-    resize: vertical;
-    min-height: 72px;
-    background: #fffdf7;
-    outline: none;
-    line-height: 1.6;
+    width: 100%; padding: 8px 10px;
+    border: 0.5px solid #FAC775; border-radius: var(--radius-sm);
+    font-size: 13px; font-family: inherit; resize: vertical;
+    min-height: 72px; background: #fffdf7; outline: none; line-height: 1.6;
   }
   .remind-msg-template textarea:focus { border-color: #EF9F27; }
 
-  .remind-list { padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
-  .remind-item {
-    background: #fffdf7;
-    border: 0.5px solid #FAC775;
-    border-radius: var(--radius-sm);
-    padding: 12px 14px;
+  .bulk-send-btn {
+    display: block; width: calc(100% - 32px); margin: 12px 16px;
+    padding: 11px; background: #06C755; color: #fff; border: none;
+    border-radius: var(--radius-sm); font-size: 14px; font-weight: 700;
+    cursor: pointer; font-family: inherit; transition: opacity 0.2s;
   }
-  .remind-item-header {
-    display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
+  .bulk-send-btn:hover { opacity: 0.85; }
+  .bulk-send-btn:disabled { opacity: 0.5; cursor: default; }
+
+  .remind-list { padding: 4px 12px 12px; display: flex; flex-direction: column; gap: 6px; }
+  .remind-item {
+    background: #fffdf7; border: 0.5px solid #FAC775;
+    border-radius: var(--radius-sm); padding: 10px 14px;
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
   }
   .remind-item-name { font-size: 13px; font-weight: 700; color: #412402; }
   .remind-item-meta { font-size: 11px; color: #854F0B; }
-  .remind-item-msg {
-    font-size: 12px;
-    background: var(--white);
-    border: 0.5px solid #FAC775;
-    border-radius: 6px;
-    padding: 8px 10px;
-    color: #2C2C2A;
-    line-height: 1.6;
-    white-space: pre-wrap;
-    margin-bottom: 8px;
-  }
-  .remind-item-actions { display: flex; gap: 6px; flex-wrap: wrap; }
-  .remind-copy-btn, .remind-line-btn {
-    flex: 1;
-    padding: 7px 10px;
-    border-radius: var(--radius-sm);
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-    border: none;
-    text-align: center;
-    text-decoration: none;
-    display: flex; align-items: center; justify-content: center; gap: 5px;
-    transition: opacity 0.15s;
-  }
-  .remind-copy-btn { background: #F1EFE8; color: #444441; }
-  .remind-copy-btn:hover { opacity: 0.8; }
-  .remind-copy-btn.copied { background: var(--green-light); color: var(--green); }
-  .remind-line-btn { background: #06C755; color: #fff; }
-  .remind-line-btn:hover { opacity: 0.85; }
+  .remind-status-linked { font-size: 11px; font-weight: 600; color: #3B6D11; }
+  .remind-status-none { font-size: 11px; color: #aaa; }
+  .remind-none { padding: 20px; text-align: center; font-size: 13px; color: var(--gray); }
 
-  .remind-none {
-    padding: 20px; text-align: center;
-    font-size: 13px; color: var(--gray);
-  }
-
-  .correction-area {
-    margin-top: 14px;
-    border-top: 0.5px solid var(--border);
-    padding-top: 12px;
-  }
-  .correction-area h4 {
-    font-size: 12px; font-weight: 600; color: var(--gray); margin-bottom: 8px;
-  }
-  .correction-textarea {
-    width: 100%; padding: 8px 10px;
-    border: 0.5px solid var(--border); border-radius: var(--radius-sm);
-    font-size: 13px; font-family: inherit; resize: vertical;
-    min-height: 72px; background: #fafaf8; outline: none;
-    transition: border-color 0.2s;
-  }
-  .correction-textarea:focus { border-color: var(--green-mid); background: #fff; }
-  .correction-send-btn {
-    margin-top: 6px; width: 100%; padding: 9px;
-    background: #06C755; color: #fff; border: none;
-    border-radius: var(--radius-sm); font-size: 13px;
-    font-weight: 600; cursor: pointer; font-family: inherit;
-    transition: opacity 0.2s;
-  }
-  .correction-send-btn:hover { opacity: 0.85; }
-  .correction-send-btn:disabled { opacity: 0.5; cursor: default; }
-
-  /* ===== PASSWORD MODAL ===== */
+  /* Password modal */
   .pw-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 500;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5); z-index: 500;
+    align-items: center; justify-content: center; padding: 20px;
   }
   .pw-overlay.open { display: flex; }
   .pw-modal {
-    background: var(--white);
-    border-radius: var(--radius);
-    padding: 28px 24px;
-    width: 100%;
-    max-width: 340px;
-    text-align: center;
+    background: var(--white); border-radius: var(--radius);
+    padding: 28px 24px; width: 100%; max-width: 340px; text-align: center;
   }
   .pw-modal .lock-icon { font-size: 36px; margin-bottom: 12px; }
   .pw-modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
   .pw-modal p { font-size: 12px; color: var(--gray); margin-bottom: 20px; }
   .pw-modal input {
-    width: 100%;
-    padding: 12px 14px;
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    font-size: 16px;
-    text-align: center;
-    letter-spacing: 0.2em;
-    outline: none;
-    margin-bottom: 12px;
-    font-family: inherit;
-    transition: border-color 0.2s;
+    width: 100%; padding: 12px 14px;
+    border: 0.5px solid var(--border); border-radius: var(--radius-sm);
+    font-size: 16px; text-align: center; letter-spacing: 0.2em;
+    outline: none; margin-bottom: 12px; font-family: inherit; transition: border-color 0.2s;
   }
   .pw-modal input:focus { border-color: var(--green-mid); }
   .pw-modal input.error { border-color: #E24B4A; animation: shake 0.3s; }
-  @keyframes shake {
-    0%,100% { transform: translateX(0); }
-    25% { transform: translateX(-6px); }
-    75% { transform: translateX(6px); }
-  }
+  @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
   .pw-modal .pw-submit {
-    width: 100%;
-    padding: 12px;
-    background: var(--green);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-    transition: background 0.2s;
+    width: 100%; padding: 12px; background: var(--green); color: #fff; border: none;
+    border-radius: var(--radius-sm); font-size: 14px; font-weight: 600;
+    cursor: pointer; font-family: inherit; transition: background 0.2s;
   }
   .pw-modal .pw-submit:hover { background: var(--green-mid); }
   .pw-modal .pw-cancel {
-    margin-top: 10px;
-    background: none;
-    border: none;
-    color: var(--gray);
-    font-size: 13px;
-    cursor: pointer;
-    font-family: inherit;
-    padding: 4px;
+    margin-top: 10px; background: none; border: none;
+    color: var(--gray); font-size: 13px; cursor: pointer; font-family: inherit; padding: 4px;
   }
-  .pw-modal .pw-cancel:hover { color: #2C2C2A; }
   .pw-error-msg { font-size: 12px; color: #E24B4A; margin-top: -6px; margin-bottom: 10px; min-height: 16px; }
 
-  .admin-logout {
-    font-size: 11px;
-    color: rgba(255,255,255,0.7);
-    background: rgba(255,255,255,0.12);
-    border: none;
-    border-radius: 10px;
-    padding: 4px 10px;
-    cursor: pointer;
-    margin-left: 8px;
-    font-family: inherit;
-    transition: background 0.2s;
+  @media (max-width: 480px) {
+    .stat-card .stat-num { font-size: 20px; }
   }
-  .admin-logout:hover { background: rgba(255,255,255,0.22); color: #fff; }
 </style>
 </head>
 <body>
@@ -913,15 +374,13 @@
   <div style="display:flex;align-items:center">
     <div class="mode-toggle">
       <button class="mode-btn active" onclick="switchMode('student')">提出</button>
-      <button class="mode-btn" onclick="switchMode('points')">ポイント</button>
-      <button class="mode-btn" onclick="switchMode('parent')">保護者</button>
       <button class="mode-btn" onclick="switchMode('admin')">管理者</button>
     </div>
     <button class="admin-logout" id="logout-btn" style="display:none" onclick="adminLogout()">ログアウト</button>
-    <button class="parent-logout" id="parent-logout-btn" style="display:none" onclick="parentLogout()">ログアウト</button>
   </div>
 </div>
 
+<!-- Admin password modal -->
 <div class="pw-overlay" id="pw-overlay">
   <div class="pw-modal">
     <div class="lock-icon">🔐</div>
@@ -936,36 +395,10 @@
   </div>
 </div>
 
-<!-- ===== PARENT PW SETUP MODAL ===== -->
-<div class="pw-overlay" id="setup-pw-overlay">
-  <div class="pw-modal">
-    <div class="lock-icon">🔑</div>
-    <h3>保護者パスワードの設定</h3>
-    <p>初回提出です。保護者が確認に使うパスワードを設定してください</p>
-    <input type="password" id="setup-pw-input" placeholder="パスワードを入力" maxlength="30"
-      onkeydown="if(event.key==='Enter')document.getElementById('setup-pw-confirm').focus()">
-    <input type="password" id="setup-pw-confirm" placeholder="もう一度入力" maxlength="30" style="margin-top:8px"
-      onkeydown="if(event.key==='Enter')confirmSetupPassword()">
-    <div class="pw-error-msg" id="setup-pw-error"></div>
-    <button class="pw-submit" onclick="confirmSetupPassword()">設定して提出する</button>
-  </div>
-</div>
-
-<!-- ===== STUDENT SCREEN ===== -->
+<!-- STUDENT SCREEN -->
 <div id="screen-student" class="screen active">
 
-  <!-- Point card -->
-  <div class="point-card" id="point-card" style="display:none">
-    <div class="point-coin">⭐</div>
-    <div class="point-info">
-      <div class="point-label">累計ポイント</div>
-      <div class="point-num" id="point-num">0<span class="point-unit">pt</span></div>
-      <div class="point-today" id="point-today">本日はまだ未提出</div>
-    </div>
-  </div>
-
-  <!-- Profile card -->
-  <div class="student-card">
+  <div class="card">
     <h2>📝 プロフィール</h2>
     <div class="form-row">
       <label>校舎名</label>
@@ -1016,31 +449,21 @@
       <label>氏名</label>
       <input type="text" id="s-name" placeholder="例：山田 太郎">
     </div>
-    <div class="form-row">
-      <label>LINE ID（任意）</label>
-      <input type="text" id="s-line-id" placeholder="Uで始まる文字列（例：U1234567890abcdef）" oninput="saveLineMyId()">
-      <div style="font-size:11px;color:var(--gray);margin-top:4px">
-        LINEでBotに「ID」と送信すると確認できます。入力すると家庭グループにも通知が届きます。
-      </div>
-    </div>
   </div>
 
-  <!-- Submit card -->
-  <div class="student-card">
+  <div class="card">
     <h2>📤 課題を提出する</h2>
-    <div class="upload-area" id="upload-area">
+    <div class="upload-area">
       <input type="file" id="file-input" accept="image/*,video/*" multiple onchange="handleFiles(this.files)">
       <div class="upload-icon">📷</div>
       <strong>写真・動画を選択</strong>
       <p>タップしてファイルを追加<br>写真・タイムラプス動画に対応</p>
     </div>
     <div class="preview-area" id="preview-area"></div>
-    <br>
-    <button class="submit-btn" id="submit-btn" onclick="submitHomework()">提出する</button>
+    <button class="submit-btn" onclick="submitHomework()">提出する</button>
   </div>
 
-  <!-- Calendar card -->
-  <div class="student-card">
+  <div class="card">
     <div class="calendar-header">
       <h2 style="margin-bottom:0">📅 提出カレンダー</h2>
       <div class="cal-nav">
@@ -1054,51 +477,7 @@
 
 </div>
 
-<!-- ===== POINTS SCREEN ===== -->
-<div id="screen-points" class="screen">
-  <div id="pts-no-profile" class="rank-no-profile" style="display:none">
-    📝 まず「提出」タブで<br>校舎・学年・氏名を入力してください
-  </div>
-  <div id="pts-content" style="display:none">
-
-    <!-- My points header -->
-    <div class="rank-header-card">
-      <h2>⭐ 累計ポイント</h2>
-      <div class="rank-my-pts">
-        <span class="big" id="pts-big">0</span>
-        <span class="unit">ポイント</span>
-      </div>
-      <div class="rank-my-meta">
-        <span id="pts-name-badge"></span>
-        <span id="pts-rank-badge"></span>
-      </div>
-    </div>
-
-    <!-- History -->
-    <div class="student-card">
-      <h2>📋 提出履歴</h2>
-      <div class="history-list" id="history-list"></div>
-      <div id="history-empty" style="font-size:13px;color:var(--gray);text-align:center;padding:16px;display:none">
-        まだ提出がありません
-      </div>
-    </div>
-
-    <!-- Ranking -->
-    <div class="student-card">
-      <h2>🏆 ランキング</h2>
-      <div class="rank-grade-tab" id="rank-grade-tab">
-        <button class="rank-grade-btn active" onclick="setRankGrade('all')">全学年</button>
-        <button class="rank-grade-btn" onclick="setRankGrade('中1')">中1</button>
-        <button class="rank-grade-btn" onclick="setRankGrade('中2')">中2</button>
-        <button class="rank-grade-btn" onclick="setRankGrade('中3')">中3</button>
-      </div>
-      <div class="ranking-list" id="ranking-list"></div>
-    </div>
-
-  </div>
-</div>
-
-<!-- ===== ADMIN SCREEN ===== -->
+<!-- ADMIN SCREEN -->
 <div id="screen-admin" class="screen">
 
   <div class="admin-toolbar">
@@ -1146,13 +525,11 @@
 
   <div class="stats-row" id="stats-row"></div>
 
-  <!-- Remind button -->
   <button class="remind-btn" onclick="toggleRemindPanel()">
     📣 本日の未提出者に催促連絡
     <span id="remind-unsubmitted-count" style="background:rgba(0,0,0,0.12);border-radius:10px;padding:1px 8px;font-size:11px"></span>
   </button>
 
-  <!-- Remind panel -->
   <div class="remind-panel" id="remind-panel" style="display:none">
     <div class="remind-panel-header">
       <h3>📣 本日（<span id="remind-today-label"></span>）の未提出者</h3>
@@ -1171,131 +548,13 @@
 
 ご不明な点はお気軽にお問い合わせください。</textarea>
     </div>
+    <button class="bulk-send-btn" id="bulk-send-btn" onclick="sendAllReminders()">📨 LINE連携済みの全員に一括送信</button>
     <div class="remind-list" id="remind-list"></div>
   </div>
 
   <div class="student-list" id="student-list"></div>
+  <div class="no-submissions" id="no-data" style="display:none">まだ提出データがありません</div>
 
-  <div class="no-submissions" id="no-data" style="display:none">
-    まだ提出データがありません
-  </div>
-
-</div>
-
-<!-- ===== PARENT SCREEN ===== -->
-<div id="screen-parent" class="screen">
-
-  <!-- Login card (shown when not logged in) -->
-  <div id="p-login-card" class="parent-search-card">
-    <h2>👨‍👩‍👧 保護者ログイン</h2>
-    <p style="font-size:12px;color:var(--gray);margin-bottom:14px">お子さまの校舎・学年・氏名と、登録した保護者パスワードでログインしてください</p>
-    <div class="parent-search-row" style="margin-bottom:8px">
-      <select id="p-school">
-        <option value="">校舎を選択</option>
-        <optgroup label="── エイメイ学院 ──">
-          <option>エイメイ学院みずほ台校舎</option>
-          <option>エイメイ学院鶴瀬校舎</option>
-          <option>エイメイ学院ふじみ野校舎</option>
-          <option>エイメイ学院トナリエふじみ野校舎</option>
-          <option>エイメイ学院水谷校舎</option>
-          <option>エイメイ学院柳瀬川志木校舎</option>
-          <option>エイメイ学院朝霞台北原校舎</option>
-          <option>エイメイ学院川越南大塚校舎</option>
-          <option>エイメイ学院上福岡清水町校舎</option>
-          <option>エイメイ学院新座志木校舎</option>
-        </optgroup>
-        <optgroup label="── 明成個別 ──">
-          <option>明成個別鶴瀬東校舎</option>
-          <option>明成個別鶴瀬西校舎</option>
-          <option>明成個別ふじみ野西口校舎</option>
-          <option>明成個別上福岡校舎</option>
-          <option>明成個別水谷校舎</option>
-          <option>明成個別新河岸校舎</option>
-          <option>明成個別南古谷校舎</option>
-          <option>明成個別富士見羽沢校舎</option>
-          <option>明成個別朝霞台校舎</option>
-          <option>明成個別志木校舎</option>
-          <option>明成個別三芳藤久保校舎</option>
-          <option>明成個別トナリエふじみ野校舎</option>
-        </optgroup>
-        <optgroup label="── Luce個別指導 ──">
-          <option>Luce個別指導みずほ台校舎</option>
-          <option>Luce個別指導鶴瀬校舎</option>
-        </optgroup>
-      </select>
-      <select id="p-grade">
-        <option value="">学年を選択</option>
-        <option value="中1">中1</option>
-        <option value="中2">中2</option>
-        <option value="中3">中3</option>
-      </select>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:8px">
-      <input type="text" id="p-name" placeholder="お子さまのお名前（例：山田 太郎）"
-        style="width:100%;padding:10px 12px;border:0.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;background:#fafaf8;outline:none;font-family:inherit"
-        onkeydown="if(event.key==='Enter')parentLogin()">
-      <div style="display:flex;gap:8px">
-        <input type="password" id="p-pw" placeholder="保護者パスワード" maxlength="30"
-          style="flex:1;padding:10px 12px;border:0.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;background:#fafaf8;outline:none;font-family:inherit"
-          onkeydown="if(event.key==='Enter')parentLogin()">
-        <button class="parent-search-btn" onclick="parentLogin()">ログイン</button>
-      </div>
-      <div id="p-login-error" style="font-size:12px;color:#E24B4A;min-height:16px"></div>
-    </div>
-  </div>
-
-  <!-- No password set notice -->
-  <div class="parent-no-result" id="p-no-pw-notice" style="display:none">
-    🔑 このお子さまの保護者パスワードはまだ設定されていません。<br>
-    生徒が最初に課題を提出する際に設定されます。
-  </div>
-
-  <!-- Result content (shown after login) -->
-  <div id="p-content" style="display:none">
-
-    <!-- Student summary -->
-    <div class="parent-header-card">
-      <div class="ph-name" id="p-student-name"></div>
-      <div class="ph-meta" id="p-student-meta"></div>
-      <div class="parent-stats">
-        <div class="parent-stat">
-          <div class="ps-num" id="p-total-pt"></div>
-          <div class="ps-label">累計ポイント</div>
-        </div>
-        <div class="parent-stat">
-          <div class="ps-num" id="p-month-count"></div>
-          <div class="ps-label">今月の提出</div>
-        </div>
-        <div class="parent-stat">
-          <div class="ps-num" id="p-total-count"></div>
-          <div class="ps-label">累計提出日数</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Calendar -->
-    <div class="student-card">
-      <div class="parent-cal-nav">
-        <h2 style="margin-bottom:0;font-size:14px;color:#185FA5">📅 提出カレンダー</h2>
-        <div style="display:flex;align-items:center;gap:6px">
-          <button onclick="changeParentMonth(-1)">‹</button>
-          <span id="p-cal-label"></span>
-          <button onclick="changeParentMonth(1)">›</button>
-        </div>
-      </div>
-      <div class="parent-cal-grid" id="p-calendar"></div>
-    </div>
-
-    <!-- Submitted files -->
-    <div class="student-card">
-      <h2 style="color:#185FA5">📎 提出ファイル <span id="p-month-label" style="font-weight:400;font-size:12px;color:var(--gray)"></span></h2>
-      <div class="parent-files" id="p-files"></div>
-      <div id="p-files-empty" style="font-size:13px;color:var(--gray);text-align:center;padding:16px;display:none">
-        この月の提出ファイルはありません
-      </div>
-    </div>
-
-  </div>
 </div>
 
 <!-- Toast -->
@@ -1308,73 +567,59 @@
 </div>
 
 <script>
-// ===== DATA STORE =====
-// submissions[studentKey] = [{date:'YYYY-MM-DD', files:[{name,type,dataUrl}]}]
+// ===== DATA =====
 let submissions = {};
-let pendingFiles = []; // {name, type, dataUrl}
-
+let pendingFiles = [];
 const STORAGE_KEY = 'eimei_hw_submissions';
 
 function loadData() {
-  try {
-    const d = localStorage.getItem(STORAGE_KEY);
-    if (d) submissions = JSON.parse(d);
-  } catch(e) {}
+  try { const d = localStorage.getItem(STORAGE_KEY); if (d) submissions = JSON.parse(d); } catch(e) {}
 }
 function saveData() {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions)); } catch(e) {}
 }
-
 loadData();
 
-// ===== PASSWORD =====
+// ===== LINE USER IDs =====
+const LINE_USERS_KEY = 'eimei_line_users';
+let lineUsers = {};
+function loadLineUsers() {
+  try { const d = localStorage.getItem(LINE_USERS_KEY); if (d) lineUsers = JSON.parse(d); } catch(e) {}
+}
+function saveLineUsers() {
+  try { localStorage.setItem(LINE_USERS_KEY, JSON.stringify(lineUsers)); } catch(e) {}
+}
+loadLineUsers();
+
+async function syncStudentUserIds() {
+  try {
+    const res = await fetch('/api/get-student-users');
+    if (!res.ok) return;
+    const serverMap = await res.json();
+    let updated = false;
+    for (const [key, uid] of Object.entries(serverMap)) {
+      if (uid && !lineUsers[key]) { lineUsers[key] = uid; updated = true; }
+    }
+    if (updated) saveLineUsers();
+  } catch {}
+}
+
+// ===== AUTH =====
 const ADMIN_PASSWORD = 'eimei2024';
 let adminAuthed = false;
-let parentAuthed = false;
-let parentCurrentKey = null;
-let parentMonth = new Date(); parentMonth.setDate(1);
-
-// parentPasswords[key] = hashed or plain password per student
-const PW_STORAGE_KEY = 'eimei_parent_passwords';
-let parentPasswords = {};
-function loadParentPasswords() {
-  try { const d = localStorage.getItem(PW_STORAGE_KEY); if (d) parentPasswords = JSON.parse(d); } catch(e) {}
-}
-function saveParentPasswords() {
-  try { localStorage.setItem(PW_STORAGE_KEY, JSON.stringify(parentPasswords)); } catch(e) {}
-}
-loadParentPasswords();
 
 function switchMode(mode) {
-  if (mode === 'admin' && !adminAuthed) { openPasswordModal('admin'); return; }
-  if (mode === 'parent') {
-    // Always show login form when switching to parent tab (unless already authed for a student)
-    parentAuthed = false;
-    parentCurrentKey = null;
-    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.querySelector(`[onclick="switchMode('parent')"]`).classList.add('active');
-    document.getElementById('screen-parent').classList.add('active');
-    document.getElementById('p-login-card').style.display = 'block';
-    document.getElementById('p-content').style.display = 'none';
-    document.getElementById('p-no-pw-notice').style.display = 'none';
-    document.getElementById('p-login-error').textContent = '';
-    document.getElementById('logout-btn').style.display = 'none';
-    document.getElementById('parent-logout-btn').style.display = 'none';
-    return;
-  }
+  if (mode === 'admin' && !adminAuthed) { openPasswordModal(); return; }
   document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelector(`[onclick="switchMode('${mode}')"]`).classList.add('active');
   document.getElementById('screen-' + mode).classList.add('active');
   document.getElementById('logout-btn').style.display = mode === 'admin' ? 'inline-block' : 'none';
-  document.getElementById('parent-logout-btn').style.display = 'none';
-  if (mode === 'admin') { syncStudentUserIds().then(() => renderAdmin()); }
+  if (mode === 'admin') syncStudentUserIds().then(() => renderAdmin());
   if (mode === 'student') renderStudentCalendar();
-  if (mode === 'points') renderPointsScreen();
 }
 
-function openPasswordModal(type) {
+function openPasswordModal() {
   document.getElementById('pw-input').value = '';
   document.getElementById('pw-error').textContent = '';
   document.getElementById('pw-input').classList.remove('error');
@@ -1387,7 +632,6 @@ function checkPassword() {
   if (val === ADMIN_PASSWORD) {
     adminAuthed = true;
     document.getElementById('pw-overlay').classList.remove('open');
-    // manually switch to admin
     document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.querySelector(`[onclick="switchMode('admin')"]`).classList.add('active');
@@ -1410,225 +654,10 @@ function cancelAdminLogin() {
   document.getElementById('screen-student').classList.add('active');
 }
 
-function cancelParentLogin() {
-  document.getElementById('parent-pw-overlay') && document.getElementById('parent-pw-overlay').classList.remove('open');
-}
-
 function adminLogout() {
   adminAuthed = false;
   document.getElementById('logout-btn').style.display = 'none';
   switchMode('student');
-}
-
-function parentLogout() {
-  parentAuthed = false;
-  parentCurrentKey = null;
-  document.getElementById('parent-logout-btn').style.display = 'none';
-  switchMode('parent');
-}
-
-// ===== PARENT LOGIN =====
-function parentLogin() {
-  const school = document.getElementById('p-school').value;
-  const grade = document.getElementById('p-grade').value;
-  const name = document.getElementById('p-name').value.trim();
-  const pw = document.getElementById('p-pw').value;
-  const errEl = document.getElementById('p-login-error');
-
-  if (!school || !grade || !name || !pw) { errEl.textContent = '全ての項目を入力してください'; return; }
-
-  const key = school + '_' + grade + '_' + name;
-
-  if (!submissions[key] || submissions[key].length === 0) {
-    errEl.textContent = '';
-    document.getElementById('p-login-card').style.display = 'none';
-    document.getElementById('p-no-pw-notice').style.display = 'block';
-    return;
-  }
-
-  if (!parentPasswords[key]) {
-    document.getElementById('p-login-card').style.display = 'none';
-    document.getElementById('p-no-pw-notice').style.display = 'block';
-    return;
-  }
-
-  if (parentPasswords[key] !== pw) {
-    errEl.textContent = 'パスワードが違います';
-    document.getElementById('p-pw').value = '';
-    return;
-  }
-
-  // Logged in
-  parentAuthed = true;
-  parentCurrentKey = key;
-  parentMonth = new Date(); parentMonth.setDate(1);
-  errEl.textContent = '';
-  document.getElementById('p-login-card').style.display = 'none';
-  document.getElementById('p-no-pw-notice').style.display = 'none';
-  document.getElementById('parent-logout-btn').style.display = 'inline-block';
-  renderParentContent();
-}
-
-// ===== PARENT PW SETUP (first submission) =====
-let _pendingSubmitCallback = null;
-
-function openSetupPwModal(callback) {
-  _pendingSubmitCallback = callback;
-  document.getElementById('setup-pw-input').value = '';
-  document.getElementById('setup-pw-confirm').value = '';
-  document.getElementById('setup-pw-error').textContent = '';
-  document.getElementById('setup-pw-overlay').classList.add('open');
-  setTimeout(() => document.getElementById('setup-pw-input').focus(), 100);
-}
-
-function confirmSetupPassword() {
-  const pw = document.getElementById('setup-pw-input').value;
-  const pw2 = document.getElementById('setup-pw-confirm').value;
-  const errEl = document.getElementById('setup-pw-error');
-  if (!pw || pw.length < 4) { errEl.textContent = '4文字以上で設定してください'; return; }
-  if (pw !== pw2) { errEl.textContent = 'パスワードが一致しません'; return; }
-  document.getElementById('setup-pw-overlay').classList.remove('open');
-  if (_pendingSubmitCallback) { _pendingSubmitCallback(pw); _pendingSubmitCallback = null; }
-}
-
-// ===== POINTS =====
-function calcPoints(key) {
-  const subs = submissions[key] || [];
-  return new Set(subs.map(s => s.date)).size;
-}
-
-let currentRankGrade = 'all';
-
-function setRankGrade(grade) {
-  currentRankGrade = grade;
-  document.querySelectorAll('.rank-grade-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.rank-grade-btn').forEach(b => {
-    if (b.getAttribute('onclick') === `setRankGrade('${grade}')`) b.classList.add('active');
-  });
-  renderRanking();
-}
-
-function renderPointsScreen() {
-  const name = document.getElementById('s-name').value.trim();
-  const school = document.getElementById('s-school').value;
-  const grade = document.getElementById('s-grade').value;
-
-  const noProfile = document.getElementById('pts-no-profile');
-  const content = document.getElementById('pts-content');
-
-  if (!name || !school || !grade) {
-    noProfile.style.display = 'block';
-    content.style.display = 'none';
-    return;
-  }
-  noProfile.style.display = 'none';
-  content.style.display = 'block';
-
-  const key = school + '_' + grade + '_' + name;
-  const pts = calcPoints(key);
-  const subs = submissions[key] || [];
-
-  // My points header
-  document.getElementById('pts-big').textContent = pts;
-  document.getElementById('pts-name-badge').textContent = `${name}（${grade}）`;
-
-  // Rank position in all students
-  const allRanked = getAllRanked('all');
-  const myRankIdx = allRanked.findIndex(r => r.key === key);
-  document.getElementById('pts-rank-badge').textContent =
-    myRankIdx >= 0 ? `全体 ${myRankIdx + 1}位` : '未ランク';
-
-  // History (newest first, unique dates)
-  const uniqueDates = [...new Set(subs.map(s => s.date))].sort((a,b) => b.localeCompare(a));
-  const histList = document.getElementById('history-list');
-  const histEmpty = document.getElementById('history-empty');
-  if (uniqueDates.length === 0) {
-    histList.innerHTML = '';
-    histEmpty.style.display = 'block';
-  } else {
-    histEmpty.style.display = 'none';
-    histList.innerHTML = uniqueDates.map((date, i) => {
-      const daySubs = subs.filter(s => s.date === date);
-      const fileCount = daySubs.reduce((acc, s) => acc + s.files.length, 0);
-      const [y, m, d] = date.split('-');
-      const label = `${parseInt(m)}月${parseInt(d)}日`;
-      return `<div class="history-item">
-        <div class="history-dot">✔</div>
-        <div class="history-info">
-          <div class="history-date">${label}</div>
-          <div class="history-count">ファイル ${fileCount}件提出</div>
-        </div>
-        <div class="history-pt">+1pt</div>
-      </div>`;
-    }).join('');
-  }
-
-  renderRanking();
-}
-
-function getAllRanked(grade) {
-  return Object.entries(submissions)
-    .map(([key, subs]) => {
-      const first = subs[0] || {};
-      return { key, name: first.name || '', school: first.school || '', grade: first.grade || '', pts: calcPoints(key) };
-    })
-    .filter(r => grade === 'all' || r.grade === grade)
-    .sort((a, b) => b.pts - a.pts);
-}
-
-function renderRanking() {
-  const name = document.getElementById('s-name').value.trim();
-  const school = document.getElementById('s-school').value;
-  const grade = document.getElementById('s-grade').value;
-  const myKey = school + '_' + grade + '_' + name;
-
-  const ranked = getAllRanked(currentRankGrade);
-  const medals = ['🥇','🥈','🥉'];
-  const medalCls = ['gold','silver','bronze'];
-
-  document.getElementById('ranking-list').innerHTML = ranked.length === 0
-    ? '<div style="font-size:13px;color:var(--gray);text-align:center;padding:16px">データがありません</div>'
-    : ranked.map((r, i) => {
-        const isMe = r.key === myKey;
-        const numHtml = i < 3
-          ? `<div class="rank-num ${medalCls[i]}">${medals[i]}</div>`
-          : `<div class="rank-num">${i+1}</div>`;
-        return `<div class="ranking-item ${isMe ? 'me' : ''}">
-          ${numHtml}
-          <div class="rank-name">
-            ${r.name}${isMe ? ' 👈' : ''}
-            <div class="rank-school">${r.school}　${r.grade}</div>
-          </div>
-          <div class="rank-pts">${r.pts}pt</div>
-        </div>`;
-      }).join('');
-}
-
-function renderPointCard() {
-  const name = document.getElementById('s-name').value.trim();
-  const school = document.getElementById('s-school').value;
-  const grade = document.getElementById('s-grade').value;
-  const card = document.getElementById('point-card');
-  if (!name || !school || !grade) { card.style.display = 'none'; return; }
-
-  card.style.display = 'flex';
-  const key = school + '_' + grade + '_' + name;
-  const pts = calcPoints(key);
-  document.getElementById('point-num').innerHTML = `${pts}<span class="point-unit">pt</span>`;
-
-  const today = new Date();
-  const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-  const todayDone = (submissions[key] || []).some(s => s.date === todayStr);
-  const todayEl = document.getElementById('point-today');
-  todayEl.textContent = todayDone ? '✔ 今日のポイント獲得済み！' : '本日はまだ未提出';
-  todayEl.className = 'point-today' + (todayDone ? ' earned' : '');
-}
-
-function animatePoint() {
-  const el = document.getElementById('point-num');
-  el.classList.remove('point-pop');
-  void el.offsetWidth;
-  el.classList.add('point-pop');
 }
 
 // ===== STUDENT CALENDAR =====
@@ -1654,8 +683,7 @@ function renderStudentCalendar() {
 
   const dows = ['日','月','火','水','木','金','土'];
   let html = dows.map(d => `<div class="cal-dow">${d}</div>`).join('');
-
-  for (let i = 0; i < firstDay; i++) html += `<div class="cal-day empty"></div>`;
+  for (let i = 0; i < firstDay; i++) html += `<div class="cal-day"></div>`;
   for (let d = 1; d <= daysInMonth; d++) {
     const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const isToday = dateStr === todayStr;
@@ -1674,11 +702,9 @@ function changeStudentMonth(delta) {
   renderStudentCalendar();
 }
 
-document.getElementById('s-name').addEventListener('input', () => { renderStudentCalendar(); renderPointCard(); });
-document.getElementById('s-school').addEventListener('change', () => { renderStudentCalendar(); renderPointCard(); });
-document.getElementById('s-grade').addEventListener('change', () => { renderStudentCalendar(); renderPointCard(); });
-
-// Init
+document.getElementById('s-name').addEventListener('input', renderStudentCalendar);
+document.getElementById('s-school').addEventListener('change', renderStudentCalendar);
+document.getElementById('s-grade').addEventListener('change', renderStudentCalendar);
 renderStudentCalendar();
 
 // ===== FILE HANDLING =====
@@ -1694,16 +720,12 @@ function handleFiles(fileList) {
 }
 
 function renderPreview() {
-  const area = document.getElementById('preview-area');
-  area.innerHTML = pendingFiles.map((f, i) => {
+  document.getElementById('preview-area').innerHTML = pendingFiles.map((f, i) => {
     const isVideo = f.type.startsWith('video');
     const media = isVideo
       ? `<video src="${f.dataUrl}" muted playsinline></video>`
       : `<img src="${f.dataUrl}" alt="">`;
-    return `<div class="preview-item">
-      ${media}
-      <button class="preview-remove" onclick="removeFile(${i})">✕</button>
-    </div>`;
+    return `<div class="preview-item">${media}<button class="preview-remove" onclick="removeFile(${i})">✕</button></div>`;
   }).join('');
 }
 
@@ -1721,28 +743,10 @@ function submitHomework() {
   if (pendingFiles.length === 0) { showToast('ファイルを選択してください'); return; }
 
   const key = school + '_' + grade + '_' + name;
-  const isFirstEver = !submissions[key] || submissions[key].length === 0;
-
-  if (isFirstEver && !parentPasswords[key]) {
-    // Show parent password setup modal first
-    openSetupPwModal((pw) => {
-      parentPasswords[key] = pw;
-      saveParentPasswords();
-      doSubmit(name, school, grade, key);
-    });
-    return;
-  }
-  doSubmit(name, school, grade, key);
-}
-
-function doSubmit(name, school, grade, key) {
   const today = new Date();
   const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
 
-  const isNewDay = !(submissions[key] || []).some(s => s.date === dateStr);
-
   if (!submissions[key]) submissions[key] = [];
-
   let entry = submissions[key].find(e => e.date === dateStr);
   if (!entry) {
     entry = { date: dateStr, files: [], name, school, grade };
@@ -1751,18 +755,13 @@ function doSubmit(name, school, grade, key) {
   entry.files.push(...pendingFiles);
 
   const imagesToUpload = pendingFiles.filter(f => f.type.startsWith('image/'));
-
   saveData();
   pendingFiles = [];
   renderPreview();
   document.getElementById('file-input').value = '';
   renderStudentCalendar();
-  renderPointCard();
-  renderPointsScreen();
-  if (isNewDay) animatePoint();
-  showToast(isNewDay ? '✔ 提出完了！+1ポイント獲得！' : '✔ 提出しました！（本日分のポイント獲得済み）');
+  showToast('✔ 提出しました！');
 
-  // 管理者・グループにLINE通知（バックグラウンドで画像圧縮→アップロード後に送信）
   (async () => {
     try {
       const imageUrls = [];
@@ -1775,11 +774,8 @@ function doSubmit(name, school, grade, key) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ dataUrl: compressed, filename: file.name.replace(/\.[^.]+$/, '.jpg') }),
           });
-          if (res.ok) {
-            const data = await res.json();
-            if (data.url) imageUrls.push(data.url);
-          }
-        } catch (uploadErr) {}
+          if (res.ok) { const data = await res.json(); if (data.url) imageUrls.push(data.url); }
+        } catch {}
       }
       const myLineId = localStorage.getItem('eimei_my_line_id') || '';
       await fetch('/api/notify-admin', {
@@ -1787,14 +783,12 @@ function doSubmit(name, school, grade, key) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, school, grade, date: dateStr, fileCount: entry.files.length, imageUrls, userId: myLineId || undefined }),
       });
-    } catch (e) {}
-
+    } catch {}
   })();
 }
 
 function compressImage(dataUrl) {
   return new Promise((resolve) => {
-    // base64→Blob→ObjectURL に変換してiOS Safariのメモリ問題を回避
     let objectUrl = null;
     try {
       const arr = dataUrl.split(',');
@@ -1803,26 +797,16 @@ function compressImage(dataUrl) {
       const u8arr = new Uint8Array(bstr.length);
       for (let i = 0; i < bstr.length; i++) u8arr[i] = bstr.charCodeAt(i);
       objectUrl = URL.createObjectURL(new Blob([u8arr], { type: mime }));
-    } catch (e) {}
-
-
+    } catch {}
     const img = new Image();
-    img.onerror = () => {
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-      console.error('[LINE] image load failed');
-      resolve(null);
-    };
+    img.onerror = () => { if (objectUrl) URL.revokeObjectURL(objectUrl); resolve(null); };
     img.onload = () => {
       if (objectUrl) URL.revokeObjectURL(objectUrl);
       const compress = (maxWidth, quality) => {
         let { width, height } = img;
-        if (width > maxWidth) {
-          height = Math.round((height * maxWidth) / width);
-          width = maxWidth;
-        }
+        if (width > maxWidth) { height = Math.round((height * maxWidth) / width); width = maxWidth; }
         const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
+        canvas.width = width; canvas.height = height;
         canvas.getContext('2d').drawImage(img, 0, 0, width, height);
         return canvas.toDataURL('image/jpeg', quality);
       };
@@ -1845,7 +829,12 @@ function showToast(msg) {
 
 // ===== ADMIN =====
 let adminExpandedKey = null;
-let adminMonths = {}; // per student key -> Date
+let adminMonths = {};
+
+function todayDateStr() {
+  const t = new Date();
+  return `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
+}
 
 function getStudents() {
   const search = document.getElementById('admin-search').value.trim().toLowerCase();
@@ -1865,56 +854,44 @@ function getStudents() {
 }
 
 function renderAdmin() {
-  const students = getStudents();
-
-  // Stats
+  const todayStr = todayDateStr();
+  const monthStr = todayStr.slice(0, 7);
   const totalStudents = Object.keys(submissions).length;
-  const allSubs = Object.values(submissions).flat();
-  const today = new Date();
-  const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-  const monthStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
-  const todayCount = allSubs.filter(s => s.date === todayStr).length;
-  const monthCount = allSubs.filter(s => s.date && s.date.startsWith(monthStr)).length;
+  const submittedTodayKeys = new Set(
+    Object.entries(submissions)
+      .filter(([, subs]) => subs.some(s => s.date === todayStr))
+      .map(([key]) => key)
+  );
 
   document.getElementById('stats-row').innerHTML = `
     <div class="stat-card"><div class="stat-num">${totalStudents}</div><div class="stat-label">登録生徒数</div></div>
-    <div class="stat-card"><div class="stat-num">${todayCount}</div><div class="stat-label">本日の提出</div></div>
-    <div class="stat-card"><div class="stat-num">${monthCount}</div><div class="stat-label">今月の提出</div></div>
+    <div class="stat-card"><div class="stat-num">${submittedTodayKeys.size}</div><div class="stat-label">本日提出済み</div></div>
+    <div class="stat-card"><div class="stat-num">${totalStudents - submittedTodayKeys.size}</div><div class="stat-label">本日未提出</div></div>
   `;
 
-  // Update unsubmitted count on remind button
-  const unsubmittedAll = getUnsubmittedToday();
+  const unsubmitted = getUnsubmittedToday();
   const countEl = document.getElementById('remind-unsubmitted-count');
-  if (countEl) countEl.textContent = unsubmittedAll.length > 0 ? `未提出 ${unsubmittedAll.length}人` : '全員提出済み ✔';
+  if (countEl) countEl.textContent = unsubmitted.length > 0 ? `未提出 ${unsubmitted.length}人` : '全員提出済み ✔';
 
+  const students = getStudents();
   const listEl = document.getElementById('student-list');
   const noData = document.getElementById('no-data');
-
-  if (students.length === 0) {
-    listEl.innerHTML = '';
-    noData.style.display = 'block';
-    return;
-  }
+  if (students.length === 0) { listEl.innerHTML = ''; noData.style.display = 'block'; return; }
   noData.style.display = 'none';
 
   listEl.innerHTML = students.map(s => {
     const count = s.subs.length;
     const initials = s.name.slice(0, 2);
     const isExpanded = adminExpandedKey === s.key;
-    const today2 = new Date();
-    const todayStr2 = `${today2.getFullYear()}-${String(today2.getMonth()+1).padStart(2,'0')}-${String(today2.getDate()).padStart(2,'0')}`;
-    const submittedToday = s.subs.some(sub => sub.date === todayStr2);
+    const submittedToday = s.subs.some(sub => sub.date === todayStr);
     return `<div class="student-row ${isExpanded ? 'expanded' : ''}" onclick="toggleStudent('${s.key}')">
       <div class="student-row-header">
         <div class="student-avatar" style="${submittedToday ? '' : 'background:#FAECE7;color:#993C1D'}">${initials}</div>
         <div class="student-info">
           <div class="name">${s.name}</div>
-          <div class="school">${s.school}　${s.grade ? s.grade : ''}</div>
+          <div class="school">${s.school}　${s.grade}</div>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
-          <div class="submission-badge ${count === 0 ? 'zero' : ''}">${count}回提出</div>
-          <div class="point-badge">⭐ ${calcPoints(s.key)}pt</div>
-        </div>
+        <div class="submission-badge ${count === 0 ? 'zero' : ''}">${count}回提出</div>
       </div>
       <div class="admin-detail ${isExpanded ? 'open' : ''}" id="detail-${s.key}">
         ${renderStudentDetail(s)}
@@ -1924,14 +901,10 @@ function renderAdmin() {
 }
 
 function renderStudentDetail(s) {
-  if (!adminMonths[s.key]) {
-    const d = new Date(); d.setDate(1);
-    adminMonths[s.key] = d;
-  }
+  if (!adminMonths[s.key]) { const d = new Date(); d.setDate(1); adminMonths[s.key] = d; }
   const m = adminMonths[s.key];
   const y = m.getFullYear();
   const mo = m.getMonth();
-  const label = `${y}年${mo+1}月`;
 
   const submittedDates = new Set(s.subs.map(sub => sub.date));
   const firstDay = new Date(y, mo, 1).getDay();
@@ -1948,17 +921,14 @@ function renderStudentDetail(s) {
     </div>`;
   }
 
-  // All files in this month
   const monthStr = `${y}-${String(mo+1).padStart(2,'0')}`;
   const monthSubs = s.subs.filter(sub => sub.date && sub.date.startsWith(monthStr));
-  const allFiles = monthSubs.flatMap((sub, si) => sub.files.map((f, fi) => ({...f, date: sub.date, si, fi})));
+  const allFiles = monthSubs.flatMap(sub => sub.files.map(f => ({...f, date: sub.date})));
 
   const filesHtml = allFiles.length > 0
     ? allFiles.map((f, idx) => {
         const isVideo = f.type && f.type.startsWith('video');
-        const media = isVideo
-          ? `<video src="${f.dataUrl}" muted></video>`
-          : `<img src="${f.dataUrl}" alt="">`;
+        const media = isVideo ? `<video src="${f.dataUrl}" muted></video>` : `<img src="${f.dataUrl}" alt="">`;
         return `<div class="sub-file" onclick="openLightbox(event,'${s.key}',${idx},'${monthStr}')">
           ${media}
           <div class="sub-file-label">${f.date ? f.date.slice(5) : ''} ${f.name || ''}</div>
@@ -1966,36 +936,15 @@ function renderStudentDetail(s) {
       }).join('')
     : '<div style="font-size:12px;color:#888;padding:8px 0">この月の提出はありません</div>';
 
-  const hasUserId = !!lineUsers[s.key];
-  const correctionHtml = hasUserId ? `
-    <div class="correction-area">
-      <h4>✏️ 添削返信（LINE送信）</h4>
-      <textarea class="correction-textarea" id="correction-${s.key}"
-        placeholder="添削コメントを入力してください…" onclick="event.stopPropagation()"></textarea>
-      <button class="correction-send-btn" id="correction-btn-${s.key}"
-        onclick="sendCorrection(event,'${s.key}','${s.name}')">
-        📨 LINEで送信
-      </button>
-    </div>
-  ` : `
-    <div class="correction-area">
-      <h4>✏️ 添削返信（LINE送信）</h4>
-      <div style="font-size:12px;color:var(--gray);padding:6px 0">
-        LINE IDが未設定です。催促パネルでIDを登録してください。
-      </div>
-    </div>
-  `;
-
   return `
     <div class="admin-cal-nav">
       <button onclick="adminChangeMonth(event,'${s.key}',-1)">‹</button>
-      <span>${label}</span>
+      <span>${y}年${mo+1}月</span>
       <button onclick="adminChangeMonth(event,'${s.key}',1)">›</button>
     </div>
     <div class="mini-cal-grid">${calHtml}</div>
     <div style="margin-top:12px;font-size:12px;font-weight:600;color:#5F5E5A;margin-bottom:6px">提出ファイル</div>
     <div class="sub-files">${filesHtml}</div>
-    ${correctionHtml}
   `;
 }
 
@@ -2004,9 +953,7 @@ function adminChangeMonth(e, key, delta) {
   const m = adminMonths[key] || new Date();
   m.setMonth(m.getMonth() + delta);
   adminMonths[key] = m;
-  // Re-render just that detail
-  const students = getStudents();
-  const s = students.find(st => st.key === key);
+  const s = getStudents().find(st => st.key === key);
   if (s) document.getElementById('detail-' + key).innerHTML = renderStudentDetail(s);
 }
 
@@ -2018,11 +965,6 @@ function toggleStudent(key) {
 // ===== REMIND PANEL =====
 let remindPanelOpen = false;
 
-function todayDateStr() {
-  const t = new Date();
-  return `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
-}
-
 function getUnsubmittedToday() {
   const todayStr = todayDateStr();
   return Object.entries(submissions)
@@ -2030,353 +972,113 @@ function getUnsubmittedToday() {
       const first = subs[0] || {};
       return { key, name: first.name || '', school: first.school || '', grade: first.grade || '', subs };
     })
-    .filter(s => !s.subs.some(sub => sub.date === todayStr));
+    .filter(s => s.name && !s.subs.some(sub => sub.date === todayStr));
 }
 
 function buildRemindMsg(name) {
-  const tmpl = document.getElementById('remind-template').value;
-  return tmpl.replace(/\{name\}/g, name);
+  return document.getElementById('remind-template').value.replace(/\{name\}/g, name);
 }
 
 function toggleRemindPanel() {
   remindPanelOpen = !remindPanelOpen;
   const panel = document.getElementById('remind-panel');
-  if (remindPanelOpen) {
-    panel.style.display = 'block';
-    renderRemindPanel();
-  } else {
-    panel.style.display = 'none';
-  }
+  if (remindPanelOpen) { panel.style.display = 'block'; renderRemindPanel(); }
+  else panel.style.display = 'none';
 }
 
-// Re-render remind list when template changes
 document.addEventListener('DOMContentLoaded', () => {
   const ta = document.getElementById('remind-template');
   if (ta) ta.addEventListener('input', () => { if (remindPanelOpen) renderRemindPanel(); });
 });
 
-// ===== 自分のLINE ID管理（生徒側）=====
-function saveLineMyId() {
-  const val = document.getElementById('s-line-id').value.trim();
-  try { localStorage.setItem('eimei_my_line_id', val); } catch(e) {}
-}
-function loadLineMyId() {
-  try {
-    const val = localStorage.getItem('eimei_my_line_id') || '';
-    const el = document.getElementById('s-line-id');
-    if (el) el.value = val;
-  } catch(e) {}
-}
-loadLineMyId();
-
-// ===== LINE USER ID 管理 =====
-// lineUsers[studentKey] = 'Uxxxxxxxxx' (LINE userId)
-const LINE_USERS_KEY = 'eimei_line_users';
-let lineUsers = {};
-function loadLineUsers() {
-  try { const d = localStorage.getItem(LINE_USERS_KEY); if (d) lineUsers = JSON.parse(d); } catch(e) {}
-}
-function saveLineUsers() {
-  try { localStorage.setItem(LINE_USERS_KEY, JSON.stringify(lineUsers)); } catch(e) {}
-}
-loadLineUsers();
-
-async function syncStudentUserIds() {
-  try {
-    const res = await fetch('/api/get-student-users');
-    if (!res.ok) return;
-    const serverMap = await res.json();
-    let updated = false;
-    for (const [key, uid] of Object.entries(serverMap)) {
-      if (uid && !lineUsers[key]) {
-        lineUsers[key] = uid;
-        updated = true;
-      }
-    }
-    if (updated) saveLineUsers();
-  } catch {}
-}
-
-// LINE API経由でメッセージ送信
-async function sendLineMessage(userId, message) {
-  try {
-    const res = await fetch('/api/send-line', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, message, type: 'reminder' }),
-    });
-    return res.ok;
-  } catch(e) { return false; }
-}
-
-// 催促パネルの各生徒にLINE送信ボタンを追加
 function renderRemindPanel() {
   const today = new Date();
-  const m = today.getMonth() + 1;
-  const d = today.getDate();
-  document.getElementById('remind-today-label').textContent = `${m}月${d}日`;
-
+  document.getElementById('remind-today-label').textContent = `${today.getMonth()+1}月${today.getDate()}日`;
   const unsubmitted = getUnsubmittedToday();
   document.getElementById('remind-count-badge').textContent = `${unsubmitted.length}人`;
 
   const listEl = document.getElementById('remind-list');
+  const bulkBtn = document.getElementById('bulk-send-btn');
+
   if (unsubmitted.length === 0) {
     listEl.innerHTML = `<div class="remind-none">🎉 本日は全員が提出済みです！</div>`;
+    bulkBtn.style.display = 'none';
     return;
   }
 
-  listEl.innerHTML = unsubmitted.map((s, idx) => {
-    const msg = buildRemindMsg(s.name);
-    const hasUserId = !!lineUsers[s.key];
-    const lineUrl = `https://line.me/R/msg/text/?${encodeURIComponent(msg)}`;
+  const linkedCount = unsubmitted.filter(s => lineUsers[s.key]).length;
+  bulkBtn.style.display = 'block';
+  bulkBtn.textContent = linkedCount > 0
+    ? `📨 LINE連携済み ${linkedCount}人に一括送信`
+    : '📨 一括送信（LINE未連携者のみ）';
+
+  listEl.innerHTML = unsubmitted.map(s => {
+    const linked = !!lineUsers[s.key];
     return `<div class="remind-item">
-      <div class="remind-item-header">
-        <span class="remind-item-name">${s.name}</span>
-        <span class="remind-item-meta">${s.school}　${s.grade}</span>
+      <div>
+        <div class="remind-item-name">${s.name}</div>
+        <div class="remind-item-meta">${s.school}　${s.grade}</div>
       </div>
-      <div class="remind-item-msg" id="remind-msg-${idx}">${msg}</div>
-      ${hasUserId ? `
-        <div style="font-size:11px;color:#3B6D11;margin-bottom:6px">✔ LINE連携済み</div>
-      ` : `
-        <div style="display:flex;gap:6px;margin-bottom:8px">
-          <input type="text" id="uid-input-${idx}" placeholder="LINE userId (Uで始まる文字列)"
-            style="flex:1;padding:6px 8px;border:0.5px solid #FAC775;border-radius:6px;font-size:11px;font-family:inherit">
-          <button onclick="saveLineUserId('${s.key}',${idx})"
-            style="padding:6px 10px;background:#EF9F27;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit">
-            保存
-          </button>
-        </div>
-      `}
-      <div class="remind-item-actions">
-        <button class="remind-copy-btn" id="remind-copy-${idx}" onclick="copyRemindMsg(${idx},'${s.name}')">
-          📋 コピー
-        </button>
-        ${hasUserId ? `
-          <button class="remind-line-btn" id="remind-line-${idx}" onclick="sendLineRemind('${s.key}',${idx},'${s.name}')">
-            📨 LINE送信
-          </button>
-        ` : `
-          <a class="remind-line-btn" href="${lineUrl}" target="_blank" onclick="event.stopPropagation()">
-            LINE で送る
-          </a>
-        `}
-      </div>
+      <span class="${linked ? 'remind-status-linked' : 'remind-status-none'}">
+        ${linked ? '✔ LINE連携済み' : 'LINE未連携'}
+      </span>
     </div>`;
   }).join('');
 }
 
-function saveLineUserId(key, idx) {
-  const input = document.getElementById(`uid-input-${idx}`);
-  const uid = input ? input.value.trim() : '';
-  if (!uid.startsWith('U') || uid.length < 10) {
-    showToast('正しいuserIdを入力してください（Uで始まる文字列）');
-    return;
-  }
-  lineUsers[key] = uid;
-  saveLineUsers();
-  renderRemindPanel();
-  showToast('✔ LINE userIdを保存しました');
-}
+async function sendAllReminders() {
+  const unsubmitted = getUnsubmittedToday();
+  const targets = unsubmitted.filter(s => lineUsers[s.key]);
+  if (targets.length === 0) { showToast('LINE連携済みの未提出者がいません'); return; }
 
-async function sendLineRemind(key, idx, name) {
-  const userId = lineUsers[key];
-  if (!userId) { showToast('LINE userIdが未設定です'); return; }
-  const msg = buildRemindMsg(name);
-  const btn = document.getElementById(`remind-line-${idx}`);
-  if (btn) { btn.textContent = '送信中...'; btn.style.opacity = '0.7'; }
-  const ok = await sendLineMessage(userId, msg);
-  if (btn) { btn.textContent = ok ? '✔ 送信完了' : '❌ 送信失敗'; btn.style.opacity = '1'; }
-  showToast(ok ? `✔ ${name}さんにLINEを送信しました` : '送信に失敗しました。userIdを確認してください');
-  setTimeout(() => { if (btn) { btn.textContent = '📨 LINE送信'; } }, 3000);
-}
-
-async function sendCorrection(e, key, name) {
-  e.stopPropagation();
-  const userId = lineUsers[key];
-  if (!userId) { showToast('LINE IDが未設定です'); return; }
-  const textarea = document.getElementById(`correction-${key}`);
-  const btn = document.getElementById(`correction-btn-${key}`);
-  const msg = textarea ? textarea.value.trim() : '';
-  if (!msg) { showToast('メッセージを入力してください'); return; }
-
-  btn.textContent = '送信中...';
+  const btn = document.getElementById('bulk-send-btn');
+  btn.textContent = `送信中... (0/${targets.length})`;
   btn.disabled = true;
-  try {
-    const res = await fetch('/api/send-line', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, message: `✏️ 添削返信\n\n${msg}`, type: 'correction' }),
-    });
-    if (res.ok) {
-      textarea.value = '';
-      btn.textContent = '✔ 送信完了';
-      showToast(`✔ ${name}さんに添削を送信しました`);
-    } else {
-      btn.textContent = '❌ 送信失敗';
-      showToast('送信に失敗しました');
-    }
-  } catch {
-    btn.textContent = '❌ 送信失敗';
-    showToast('送信に失敗しました');
-  }
-  btn.disabled = false;
-  setTimeout(() => { btn.textContent = '📨 LINEで送信'; }, 3000);
-}
 
-function copyRemindMsg(idx, name) {
-  const msg = buildRemindMsg(name);
-  navigator.clipboard.writeText(msg).then(() => {
-    const btn = document.getElementById(`remind-copy-${idx}`);
-    if (btn) {
-      btn.textContent = '✔ コピーしました';
-      btn.classList.add('copied');
-      setTimeout(() => { btn.textContent = '📋 コピー'; btn.classList.remove('copied'); }, 2000);
-    }
-  }).catch(() => {
-    const el = document.getElementById(`remind-msg-${idx}`);
-    if (el) {
-      const range = document.createRange();
-      range.selectNode(el);
-      window.getSelection().removeAllRanges();
-      window.getSelection().addRange(range);
-    }
-  });
+  let ok = 0, fail = 0;
+  for (const s of targets) {
+    const msg = buildRemindMsg(s.name);
+    try {
+      const res = await fetch('/api/send-line', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: lineUsers[s.key], message: msg, type: 'reminder' }),
+      });
+      if (res.ok) ok++; else fail++;
+    } catch { fail++; }
+    btn.textContent = `送信中... (${ok + fail}/${targets.length})`;
+  }
+
+  btn.disabled = false;
+  btn.textContent = `📨 LINE連携済み ${targets.length}人に一括送信`;
+  showToast(fail === 0
+    ? `✔ ${ok}人にLINE送信しました`
+    : `送信完了：成功 ${ok}人 / 失敗 ${fail}人`
+  );
 }
 
 // ===== LIGHTBOX =====
 let lightboxFiles = [];
+
 function openLightbox(e, key, idx, monthStr) {
   e.stopPropagation();
   const s = Object.entries(submissions).find(([k]) => k === key);
   if (!s) return;
   const monthSubs = s[1].filter(sub => sub.date && sub.date.startsWith(monthStr));
   lightboxFiles = monthSubs.flatMap(sub => sub.files.map(f => ({...f, date: sub.date})));
-  showLightboxFile(idx);
-  document.getElementById('lightbox').classList.add('open');
-}
-function showLightboxFile(idx) {
   const f = lightboxFiles[idx];
   if (!f) return;
   const isVideo = f.type && f.type.startsWith('video');
   document.getElementById('lightbox-content').innerHTML = isVideo
-    ? `<video src="${f.dataUrl}" controls autoplay style="max-width:100%;max-height:85vh;border-radius:8px"></video>`
-    : `<img src="${f.dataUrl}" alt="" style="max-width:100%;max-height:85vh;border-radius:8px">`;
+    ? `<video src="${f.dataUrl}" controls autoplay style="max-width:100%;max-height:85vh;border-radius:8px" onclick="event.stopPropagation()"></video>`
+    : `<img src="${f.dataUrl}" alt="" style="max-width:100%;max-height:85vh;border-radius:8px" onclick="event.stopPropagation()">`;
+  document.getElementById('lightbox').classList.add('open');
 }
+
 function closeLightbox() {
   document.getElementById('lightbox').classList.remove('open');
   document.getElementById('lightbox-content').innerHTML = '';
 }
-
-// ===== PARENT SCREEN =====
-
-function renderParentContent() {
-  if (!parentCurrentKey) return;
-  const key = parentCurrentKey;
-  const subs = submissions[key] || [];
-  const first = subs[0] || {};
-
-  document.getElementById('p-content').style.display = 'block';
-  document.getElementById('p-student-name').textContent = first.name || '';
-  document.getElementById('p-student-meta').textContent = `${first.school || ''}　${first.grade || ''}`;
-
-  // Stats
-  const pts = calcPoints(key);
-  const today = new Date();
-  const monthStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
-  const monthCount = new Set(subs.filter(s => s.date && s.date.startsWith(monthStr)).map(s => s.date)).size;
-  const totalDays = new Set(subs.map(s => s.date)).size;
-  document.getElementById('p-total-pt').textContent = pts + 'pt';
-  document.getElementById('p-month-count').textContent = monthCount + '日';
-  document.getElementById('p-total-count').textContent = totalDays + '日';
-
-  renderParentCalendar();
-  renderParentFiles();
-}
-
-function renderParentCalendar() {
-  const key = parentCurrentKey;
-  const subs = submissions[key] || [];
-  const submittedDates = new Set(subs.map(s => s.date));
-  const y = parentMonth.getFullYear();
-  const m = parentMonth.getMonth();
-  document.getElementById('p-cal-label').textContent = `${y}年${m+1}月`;
-
-  const firstDay = new Date(y, m, 1).getDay();
-  const daysInMonth = new Date(y, m+1, 0).getDate();
-  const today = new Date();
-  const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-
-  const dows = ['日','月','火','水','木','金','土'];
-  let html = dows.map(d => `<div class="cal-dow" style="font-size:10px;color:#185FA5">${d}</div>`).join('');
-  for (let i = 0; i < firstDay; i++) html += `<div class="parent-cal-day"></div>`;
-  for (let d = 1; d <= daysInMonth; d++) {
-    const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const ok = submittedDates.has(dateStr);
-    const isToday = dateStr === todayStr;
-    html += `<div class="parent-cal-day ${ok ? 'submitted' : ''} ${isToday ? 'today' : ''}">
-      ${ok ? '<span class="pcd-check">✔</span>' : ''}
-      <span class="pcd-num">${d}</span>
-    </div>`;
-  }
-  document.getElementById('p-calendar').innerHTML = html;
-}
-
-function renderParentFiles() {
-  const key = parentCurrentKey;
-  const subs = submissions[key] || [];
-  const y = parentMonth.getFullYear();
-  const m = parentMonth.getMonth();
-  const monthStr = `${y}-${String(m+1).padStart(2,'0')}`;
-  document.getElementById('p-month-label').textContent = `（${y}年${m+1}月）`;
-
-  const monthSubs = subs.filter(s => s.date && s.date.startsWith(monthStr));
-  const allFiles = monthSubs.flatMap((sub, si) => sub.files.map((f, fi) => ({...f, date: sub.date, si, fi})));
-
-  const filesEl = document.getElementById('p-files');
-  const emptyEl = document.getElementById('p-files-empty');
-  if (allFiles.length === 0) {
-    filesEl.innerHTML = '';
-    emptyEl.style.display = 'block';
-  } else {
-    emptyEl.style.display = 'none';
-    filesEl.innerHTML = allFiles.map((f, idx) => {
-      const isVideo = f.type && f.type.startsWith('video');
-      const media = isVideo
-        ? `<video src="${f.dataUrl}" muted></video>`
-        : `<img src="${f.dataUrl}" alt="">`;
-      return `<div class="parent-file" onclick="openParentLightbox(${idx},'${monthStr}')">
-        ${media}
-        <div class="parent-file-label">${f.date ? f.date.slice(5) : ''}</div>
-      </div>`;
-    }).join('');
-  }
-}
-
-function changeParentMonth(delta) {
-  parentMonth.setMonth(parentMonth.getMonth() + delta);
-  renderParentCalendar();
-  renderParentFiles();
-}
-
-let parentLightboxFiles = [];
-function openParentLightbox(idx, monthStr) {
-  const subs = submissions[parentCurrentKey] || [];
-  const monthSubs = subs.filter(s => s.date && s.date.startsWith(monthStr));
-  parentLightboxFiles = monthSubs.flatMap(sub => sub.files.map(f => ({...f})));
-  const f = parentLightboxFiles[idx];
-  if (!f) return;
-  const isVideo = f.type && f.type.startsWith('video');
-  document.getElementById('lightbox-content').innerHTML = isVideo
-    ? `<video src="${f.dataUrl}" controls autoplay style="max-width:100%;max-height:85vh;border-radius:8px"></video>`
-    : `<img src="${f.dataUrl}" alt="" style="max-width:100%;max-height:85vh;border-radius:8px">`;
-  document.getElementById('lightbox').classList.add('open');
-}
-
-// ===== DEMO DATA（削除済み・本番運用モード）=====
-function addDemoData() {
-  // デモデータなし
-}
-addDemoData();
 </script>
 </body>
 </html>
